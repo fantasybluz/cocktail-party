@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="theme-color" content="#2b2d42" />
-    <title>7-11 調酒拉霸機</title>
-    <meta name="description" content="用 7-11 買得到的酒和飲料，隨機轉出今晚的調酒，附比例和口感。" />
+    <title>超商調酒拉霸機</title>
+    <meta name="description" content="用超商買得到的酒和飲料，隨機轉出今晚的調酒，附比例和口感。還有懲罰轉盤、數字炸彈、國王杯等 8 種喝酒遊戲，一支手機大家輪流玩。" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="7-11 調酒拉霸機" />
-    <meta property="og:description" content="用 7-11 買得到的酒和飲料，隨機轉出今晚的調酒，附比例和口感。" />
+    <meta property="og:title" content="超商調酒拉霸機" />
+    <meta property="og:description" content="用超商買得到的酒和飲料，隨機轉出今晚的調酒，附比例和口感。還有懲罰轉盤、數字炸彈、國王杯等 8 種喝酒遊戲，一支手機大家輪流玩。" />
     <meta property="og:url" content="https://fantasybluz.github.io/711-alcohol-slot-machine/" />
     <!-- 貼連結時聊天室的預覽圖，要用絕對網址 -->
     <meta property="og:image" content="https://fantasybluz.github.io/711-alcohol-slot-machine/og.png" />
@@ -36,6 +36,9 @@
         --green-dark: #005c3f;
         --yellow: #ffd23f;
         --purple: #6b5ca5;
+        --blue: #3a7bd5;
+        --blue-light: #7aa8ec;
+        --blue-dark: #24569e;
         --line-green: #06c755;
         --line-green-dark: #049a42;
         --lcd-bg: #0f2a1d;
@@ -56,8 +59,14 @@
         box-sizing: border-box;
       }
 
+      [hidden] {
+        display: none !important;
+      }
+
       html {
         -webkit-text-size-adjust: 100%;
+        /* scrollIntoView 停的位置要避開底部切換列 */
+        scroll-padding-bottom: calc(80px + env(safe-area-inset-bottom));
       }
 
       body {
@@ -77,6 +86,8 @@
         -webkit-user-select: none;
         user-select: none;
         -webkit-touch-callout: none;
+        /* 關掉連點兩下放大（狂按按鈕時很容易誤觸），雙指縮放還是可以 */
+        touch-action: manipulation;
       }
 
       button {
@@ -89,7 +100,8 @@
       .app {
         width: min(100%, 440px);
         margin: 0 auto;
-        padding: max(16px, env(safe-area-inset-top)) 12px max(24px, env(safe-area-inset-bottom));
+        /* 底部留給切換頁面的列 */
+        padding: max(16px, env(safe-area-inset-top)) 12px calc(96px + env(safe-area-inset-bottom));
       }
 
       /* ---------- 機台 ---------- */
@@ -109,7 +121,7 @@
         text-align: center;
       }
 
-      /* 7-11 招牌的橘紅綠三條線 */
+      /* 招牌的橘紅綠三條色帶 */
       .stripes {
         height: 12px;
         background: linear-gradient(var(--orange) 0 4px, var(--red) 4px 8px, var(--green) 8px 12px);
@@ -584,6 +596,12 @@
         margin: 24px 4px 0;
       }
 
+      .visitor {
+        display: block;
+        margin-bottom: 4px;
+        color: var(--yellow);
+      }
+
       .notice {
         margin: 0;
         font-size: 12px;
@@ -602,6 +620,865 @@
         background: var(--cream);
         box-shadow: var(--outline), inset -4px -4px 0 var(--cream-dark);
         cursor: pointer;
+      }
+
+      /* ---------- 切換頁面 ---------- */
+
+      .view[hidden] {
+        display: none;
+      }
+
+      .tabbar {
+        position: fixed;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 10;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        padding: 0 env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        background: var(--ink);
+        box-shadow: 0 -4px 0 0 var(--green-dark);
+      }
+
+      .tabbar__tab {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        height: 64px;
+        font-size: 12px;
+        line-height: 16px;
+        color: var(--muted);
+        text-decoration: none;
+      }
+
+      .tabbar__tab.is-active {
+        color: var(--yellow);
+        box-shadow: inset 0 4px 0 var(--orange);
+      }
+
+      .tabbar__icon svg {
+        display: block;
+        width: 32px;
+        height: 32px;
+      }
+
+      .tabbar__tab:not(.is-active) .tabbar__icon {
+        opacity: 0.5;
+      }
+
+      /* ---------- 共用按鈕、面板 ---------- */
+
+      .btn {
+        display: block;
+        width: calc(100% - 8px);
+        min-height: 48px;
+        margin: 4px;
+        padding: 8px 12px;
+        border: 0;
+        font-size: 16px;
+        line-height: 24px;
+        text-align: center;
+        text-decoration: none;
+        color: var(--ink);
+        background: var(--cream);
+        box-shadow: var(--outline), inset -4px -4px 0 var(--cream-dark);
+        cursor: pointer;
+      }
+
+      .btn:active:not(:disabled) {
+        transform: translateY(2px);
+      }
+
+      .btn:disabled {
+        cursor: default;
+        opacity: 0.45;
+      }
+
+      .btn--orange {
+        color: var(--cream);
+        text-shadow: 2px 2px 0 var(--orange-dark);
+        background: var(--orange);
+        box-shadow: var(--outline), inset -4px -4px 0 var(--orange-dark), inset 4px 4px 0 var(--orange-light);
+      }
+
+      .btn--red {
+        color: var(--cream);
+        text-shadow: 2px 2px 0 var(--red-dark);
+        background: var(--red);
+        box-shadow: var(--outline), inset -4px -4px 0 var(--red-dark), inset 4px 4px 0 var(--red-light);
+      }
+
+      .btn--blue {
+        color: var(--cream);
+        text-shadow: 2px 2px 0 var(--blue-dark);
+        background: var(--blue);
+        box-shadow: var(--outline), inset -4px -4px 0 var(--blue-dark), inset 4px 4px 0 var(--blue-light);
+      }
+
+      .btn--big {
+        min-height: 60px;
+        font-size: 24px;
+        line-height: 32px;
+      }
+
+      .btn--small {
+        width: fit-content;
+        min-height: 36px;
+        margin: 16px auto 4px;
+        padding: 6px 16px;
+        font-size: 12px;
+        line-height: 20px;
+      }
+
+      .btn-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .panel {
+        margin: 4px 4px 16px;
+        padding: 16px;
+        color: var(--ink);
+        background: var(--cream);
+        box-shadow: var(--outline), inset -4px -4px 0 var(--cream-dark);
+      }
+
+      .text-input {
+        display: block;
+        width: 100%;
+        height: 44px;
+        padding: 0 12px;
+        border: 0;
+        border-radius: 0;
+        /* 16px 以上 iOS 點輸入框才不會自動放大 */
+        font: inherit;
+        font-size: 16px;
+        color: var(--ink);
+        background: #fff;
+        box-shadow: inset 0 0 0 4px var(--ink);
+        appearance: none;
+        -webkit-user-select: text;
+        user-select: text;
+      }
+
+      /* ---------- 遊戲列表 ---------- */
+
+      .page-head {
+        margin: 8px 4px 16px;
+      }
+
+      .page-title,
+      .game-title {
+        margin: 0;
+        font-size: 24px;
+        font-weight: normal;
+        line-height: 32px;
+      }
+
+      .page-sub {
+        margin: 4px 0 0;
+        font-size: 12px;
+        line-height: 16px;
+        color: var(--muted);
+      }
+
+      .game-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 12px;
+      }
+
+      .game-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 4px;
+        margin: 4px;
+        padding: 12px 8px;
+        text-align: center;
+        text-decoration: none;
+        color: var(--ink);
+        background: var(--cream);
+        box-shadow: var(--outline), inset -4px -4px 0 var(--cream-dark);
+      }
+
+      .game-card:active {
+        transform: translateY(2px);
+      }
+
+      .game-card svg {
+        display: block;
+        width: 64px;
+        height: 64px;
+      }
+
+      .game-card__name {
+        font-size: 16px;
+        line-height: 24px;
+      }
+
+      .game-card__desc {
+        font-size: 12px;
+        line-height: 16px;
+        color: var(--text-soft);
+      }
+
+      /* ---------- 遊戲頁共用 ---------- */
+
+      .game-head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin: 4px 0 12px;
+      }
+
+      .back-btn {
+        flex: none;
+        margin: 4px;
+        padding: 4px 10px;
+        font-size: 12px;
+        line-height: 20px;
+        color: var(--ink);
+        text-decoration: none;
+        background: var(--cream);
+        box-shadow: var(--outline), inset -4px -4px 0 var(--cream-dark);
+      }
+
+      .game-rule {
+        margin: 0 4px 16px;
+        font-size: 12px;
+        line-height: 20px;
+        color: var(--muted);
+      }
+
+      .game-status {
+        min-height: 20px;
+        margin: 8px 4px;
+        font-size: 12px;
+        line-height: 20px;
+        text-align: center;
+      }
+
+      .game-result .screen__main,
+      .game-result .game-status {
+        white-space: pre-line;
+      }
+
+      .result-actions {
+        display: grid;
+        gap: 8px;
+      }
+
+      .settings {
+        display: grid;
+        gap: 4px;
+        margin: 0 4px 12px;
+      }
+
+      .stepper {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto auto auto;
+        align-items: center;
+        gap: 4px;
+      }
+
+      .stepper__value {
+        min-width: 48px;
+        font-size: 24px;
+        line-height: 32px;
+        text-align: center;
+      }
+
+      .stepper .btn {
+        width: 44px;
+        min-height: 44px;
+        padding: 0;
+        font-size: 24px;
+      }
+
+      .segmented {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+        margin: 0 4px 12px;
+      }
+
+      .segmented button {
+        min-height: 40px;
+        margin: 4px;
+        border: 0;
+        font-size: 16px;
+        color: var(--ink);
+        background: var(--cream);
+        box-shadow: var(--outline), inset -4px -4px 0 var(--cream-dark);
+        cursor: pointer;
+      }
+
+      .segmented button.is-active {
+        color: var(--cream);
+        background: var(--orange);
+        box-shadow: var(--outline), inset -4px -4px 0 var(--orange-dark);
+      }
+
+      /* ---------- 懲罰轉盤 ---------- */
+
+      .ring {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .ring__cell {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        aspect-ratio: 1;
+        margin: 4px;
+        padding: 6px;
+        font-size: 16px;
+        line-height: 20px;
+        text-align: center;
+        word-break: break-all;
+        color: var(--ink);
+        background: var(--cream);
+        box-shadow: var(--outline), inset -4px -4px 0 var(--cream-dark);
+      }
+
+      .ring__cell.is-lit {
+        background: var(--yellow);
+        box-shadow: var(--outline), inset -4px -4px 0 #d9a800;
+      }
+
+      .ring__cell.is-win {
+        color: var(--cream);
+        background: var(--orange);
+        box-shadow: var(--outline), inset -4px -4px 0 var(--orange-dark);
+        animation: blink 0.3s steps(1) 6;
+      }
+
+      .ring__start {
+        grid-area: 2 / 2;
+        aspect-ratio: 1;
+        margin: 4px;
+        border: 0;
+        font-size: 24px;
+        color: var(--cream);
+        text-shadow: 2px 2px 0 var(--red-dark);
+        background: var(--red);
+        box-shadow: var(--outline), inset -4px -4px 0 var(--red-dark), inset 4px 4px 0 var(--red-light);
+        cursor: pointer;
+      }
+
+      .ring__start:active:not(:disabled) {
+        transform: translateY(2px);
+      }
+
+      .ring__start:disabled {
+        cursor: default;
+        filter: saturate(0.4) brightness(0.85);
+      }
+
+      .wheel-editor {
+        margin-top: 16px;
+      }
+
+      .wheel-editor__list {
+        display: grid;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      /* ---------- 數字炸彈 ---------- */
+
+      .nb-range {
+        margin: 0;
+        font-size: 36px;
+        line-height: 48px;
+        text-shadow: 0 0 6px rgb(125 255 168 / 45%);
+      }
+
+      .nb-input {
+        min-height: 48px;
+        margin: 0 4px 12px;
+        padding: 8px;
+        font-size: 24px;
+        line-height: 32px;
+        text-align: center;
+        color: var(--ink);
+        background: #fff;
+        box-shadow: var(--outline);
+      }
+
+      .nb-input.is-placeholder {
+        color: var(--text-soft);
+      }
+
+      .nb-input.is-error {
+        color: var(--red);
+        animation: shake 0.3s steps(4);
+      }
+
+      .keypad {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 4px;
+      }
+
+      .keypad .btn {
+        min-height: 56px;
+        font-size: 24px;
+      }
+
+      .keypad .btn[data-key='清除'] {
+        font-size: 16px;
+      }
+
+      /* ---------- 開箱炸彈 ---------- */
+
+      .box-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+      }
+
+      .box {
+        position: relative;
+        display: grid;
+        place-items: center;
+        aspect-ratio: 1;
+        margin: 4px;
+        padding: 0;
+        border: 0;
+        color: var(--ink);
+        background: var(--cream);
+        box-shadow: var(--outline), inset -4px -4px 0 var(--cream-dark);
+        cursor: pointer;
+      }
+
+      .box svg {
+        display: block;
+        width: 48px;
+        height: 48px;
+      }
+
+      .box__num {
+        position: absolute;
+        top: 2px;
+        left: 4px;
+        font-size: 12px;
+        line-height: 16px;
+      }
+
+      .box__label {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-size: 16px;
+        color: var(--green-dark);
+      }
+
+      .box:disabled {
+        cursor: default;
+        opacity: 1;
+      }
+
+      .box.is-open {
+        background: var(--cream-dark);
+      }
+
+      .box.is-open:not(.is-bomb) svg {
+        opacity: 0.25;
+      }
+
+      .box.is-bomb {
+        background: var(--red);
+        box-shadow: var(--outline), inset -4px -4px 0 var(--red-dark);
+      }
+
+      .box.is-bomb .box__num {
+        color: var(--cream);
+      }
+
+      /* ---------- 傳手機炸彈 ---------- */
+
+      .hp-stage {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 4px 4px 16px;
+        padding: 16px;
+        text-align: center;
+        background-color: var(--lcd-bg);
+        background-image: repeating-linear-gradient(transparent 0 3px, rgb(0 0 0 / 25%) 3px 4px);
+        box-shadow: var(--outline), inset 4px 4px 0 var(--lcd-shadow);
+      }
+
+      .hp-bomb svg {
+        display: block;
+        width: 128px;
+        height: 128px;
+      }
+
+      .hp-stage.is-running .hp-bomb {
+        animation: pulse var(--pulse, 1s) steps(2) infinite;
+      }
+
+      @keyframes pulse {
+        50% {
+          transform: scale(1.1);
+        }
+      }
+
+      .hp-label {
+        margin: 8px 0 0;
+        font-size: 12px;
+        line-height: 16px;
+        color: var(--lcd-dim);
+      }
+
+      .hp-topic {
+        margin: 0;
+        font-size: 24px;
+        line-height: 32px;
+        color: var(--lcd-text);
+      }
+
+      /* ---------- 國王杯 ---------- */
+
+      .playing-card {
+        position: relative;
+        display: block;
+        width: 160px;
+        height: 224px;
+        margin: 8px auto 20px;
+        padding: 0;
+        border: 0;
+        color: var(--ink);
+        background: #fff;
+        box-shadow: var(--outline), inset -4px -4px 0 var(--cream-dark);
+        cursor: pointer;
+      }
+
+      .playing-card.is-red {
+        color: var(--red);
+      }
+
+      /* 牌背：紅色棋盤格 */
+      .playing-card.is-back {
+        background: conic-gradient(var(--red-dark) 25%, var(--red) 0 50%, var(--red-dark) 0 75%, var(--red) 0) 0 0 / 16px 16px;
+      }
+
+      .playing-card.is-back > * {
+        visibility: hidden;
+      }
+
+      .playing-card.is-back::after {
+        content: '抽牌';
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-size: 24px;
+        color: var(--cream);
+        text-shadow: 2px 2px 0 var(--ink);
+      }
+
+      .playing-card.is-flipping {
+        animation: flip 0.3s steps(4);
+      }
+
+      @keyframes flip {
+        50% {
+          transform: scaleX(0);
+        }
+      }
+
+      .playing-card__corner {
+        position: absolute;
+        top: 8px;
+        left: 12px;
+        font-size: 24px;
+        line-height: 28px;
+        text-align: center;
+        white-space: pre;
+      }
+
+      .playing-card__corner--bottom {
+        top: auto;
+        right: 12px;
+        bottom: 8px;
+        left: auto;
+        transform: rotate(180deg);
+      }
+
+      .playing-card__suit {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        place-items: center;
+        font-size: 72px;
+        line-height: 1;
+      }
+
+      .kc-rule {
+        text-align: center;
+      }
+
+      .kc-rule__title {
+        margin: 0;
+        font-size: 24px;
+        line-height: 32px;
+      }
+
+      .kc-rule__desc {
+        margin: 8px 0 0;
+        line-height: 24px;
+      }
+
+      .rules-list {
+        margin-top: 20px;
+      }
+
+      .rules-list summary {
+        cursor: pointer;
+      }
+
+      .rules-list dl {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 8px 12px;
+        margin: 12px 0 0;
+        font-size: 12px;
+        line-height: 20px;
+      }
+
+      .rules-list dt {
+        color: var(--red);
+      }
+
+      .rules-list dd {
+        margin: 0;
+      }
+
+      /* ---------- 題目卡 ---------- */
+
+      .q-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 12px;
+        min-height: 220px;
+        text-align: center;
+      }
+
+      .q-card p {
+        margin: 0;
+      }
+
+      .q-card__type {
+        font-size: 12px;
+        line-height: 16px;
+        color: var(--text-soft);
+      }
+
+      .q-card__type.is-truth {
+        color: var(--blue);
+      }
+
+      .q-card__type.is-dare {
+        color: var(--red);
+      }
+
+      .q-card__text {
+        font-size: 24px;
+        line-height: 36px;
+      }
+
+      .q-card__foot {
+        font-size: 12px;
+        line-height: 16px;
+        color: var(--red);
+      }
+
+      .q-card.is-new {
+        animation: pop 0.2s steps(2);
+      }
+
+      @keyframes pop {
+        0% {
+          transform: scale(0.94);
+        }
+      }
+
+      /* ---------- 誰是臥底 ---------- */
+
+      .spy-who {
+        margin: 8px 4px 16px;
+        font-size: 24px;
+        line-height: 32px;
+        text-align: center;
+      }
+
+      .spy-who strong {
+        font-weight: normal;
+        color: var(--yellow);
+      }
+
+      .spy-word {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: calc(100% - 8px);
+        min-height: 200px;
+        margin: 4px 4px 16px;
+        border: 0;
+        font-size: 16px;
+        color: var(--lcd-text);
+        background-color: var(--lcd-bg);
+        background-image: repeating-linear-gradient(transparent 0 3px, rgb(0 0 0 / 25%) 3px 4px);
+        box-shadow: var(--outline), inset 4px 4px 0 var(--lcd-shadow);
+        cursor: pointer;
+      }
+
+      .spy-word strong {
+        font-size: 48px;
+        font-weight: normal;
+        line-height: 60px;
+        text-shadow: 0 0 6px rgb(125 255 168 / 45%);
+      }
+
+      .spy-word small {
+        font-size: 12px;
+        color: var(--lcd-dim);
+      }
+
+      .player-grid {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .player {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        aspect-ratio: 1;
+        margin: 4px;
+        padding: 0;
+        border: 0;
+        font-size: 16px;
+        line-height: 20px;
+        color: var(--ink);
+        background: var(--cream);
+        box-shadow: var(--outline), inset -4px -4px 0 var(--cream-dark);
+        cursor: pointer;
+      }
+
+      .player small {
+        font-size: 12px;
+        line-height: 16px;
+      }
+
+      .player.is-selected {
+        background: var(--yellow);
+        box-shadow: var(--outline), inset -4px -4px 0 #d9a800;
+      }
+
+      .player:disabled {
+        cursor: default;
+        opacity: 0.5;
+      }
+
+      .player.is-spy:disabled {
+        color: var(--cream);
+        background: var(--red);
+        box-shadow: var(--outline), inset -4px -4px 0 var(--red-dark);
+        opacity: 1;
+      }
+
+      /* ---------- 爆炸畫面 ---------- */
+
+      .boom {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgb(27 27 47 / 85%);
+      }
+
+      .boom[hidden] {
+        display: none;
+      }
+
+      .boom__inner {
+        width: min(100%, 360px);
+        padding: 24px 16px 16px;
+        text-align: center;
+        color: var(--cream);
+        background: var(--red);
+        box-shadow: var(--outline), inset -4px -4px 0 var(--red-dark), inset 4px 4px 0 var(--red-light);
+        animation: boom-in 0.3s steps(3);
+      }
+
+      @keyframes boom-in {
+        0% {
+          transform: scale(0.4);
+        }
+        60% {
+          transform: scale(1.1);
+        }
+      }
+
+      .boom__sprite svg {
+        display: block;
+        width: 128px;
+        height: 128px;
+        margin: 0 auto;
+      }
+
+      .boom__title {
+        margin: 8px 0 0;
+        font-size: 48px;
+        line-height: 60px;
+        text-shadow: 4px 4px 0 var(--red-dark);
+      }
+
+      .boom__text {
+        margin: 8px 0 16px;
+        line-height: 24px;
+        white-space: pre-line;
+      }
+
+      .boom__actions {
+        display: grid;
+        gap: 8px;
+      }
+
+      body.is-shaking .app {
+        animation: shake 0.4s steps(6);
+      }
+
+      @keyframes shake {
+        25% {
+          transform: translate(-6px, 2px);
+        }
+        50% {
+          transform: translate(6px, -2px);
+        }
+        75% {
+          transform: translate(-4px, 0);
+        }
       }
 
       /* ---------- 螢幕尺寸 ---------- */
@@ -637,7 +1514,10 @@
       @media (prefers-reduced-motion: reduce) {
         .lights,
         .screen.is-busy .screen__main,
-        .cabinet.is-win .screen__tag {
+        .cabinet.is-win .screen__tag,
+        .hp-stage.is-running .hp-bomb,
+        .ring__cell.is-win,
+        body.is-shaking .app {
           animation: none;
         }
       }
@@ -760,103 +1640,286 @@
   </head>
   <body>
     <main class="app">
-      <section class="cabinet" aria-label="調酒拉霸機">
-        <header class="marquee">
-          <div class="stripes" aria-hidden="true"></div>
-          <div class="lights" aria-hidden="true"></div>
-          <h1 class="title"><span class="title__brand">7-11</span> 調酒拉霸機</h1>
-          <div class="lights lights--bottom" aria-hidden="true"></div>
-        </header>
+      <section class="view" data-view="slot">
+        <section class="cabinet" aria-label="調酒拉霸機">
+          <header class="marquee">
+            <div class="stripes" aria-hidden="true"></div>
+            <div class="lights" aria-hidden="true"></div>
+            <h1 class="title"><span class="title__brand">超商</span>調酒拉霸機</h1>
+            <div class="lights lights--bottom" aria-hidden="true"></div>
+          </header>
 
-        <div class="reel-area">
-          <div class="reels">
-            <div class="reel" data-reel="base">
-              <span class="reel__label">基酒</span>
-              <button class="reel__window" type="button" aria-pressed="false" aria-label="基酒轉輪，點一下鎖定">
-                <span class="reel__strip"></span>
-                <span class="reel__lock">LOCK</span>
-              </button>
+          <div class="reel-area">
+            <div class="reels">
+              <div class="reel" data-reel="base">
+                <span class="reel__label">基酒</span>
+                <button class="reel__window" type="button" aria-pressed="false" aria-label="基酒轉輪，點一下鎖定">
+                  <span class="reel__strip"></span>
+                  <span class="reel__lock">LOCK</span>
+                </button>
+              </div>
+              <div class="reel" data-reel="mixer">
+                <span class="reel__label">材料一</span>
+                <button class="reel__window" type="button" aria-pressed="false" aria-label="材料一轉輪，點一下鎖定">
+                  <span class="reel__strip"></span>
+                  <span class="reel__lock">LOCK</span>
+                </button>
+              </div>
+              <div class="reel" data-reel="accent">
+                <span class="reel__label">材料二</span>
+                <button class="reel__window" type="button" aria-pressed="false" aria-label="材料二轉輪，點一下鎖定">
+                  <span class="reel__strip"></span>
+                  <span class="reel__lock">LOCK</span>
+                </button>
+              </div>
             </div>
-            <div class="reel" data-reel="mixer">
-              <span class="reel__label">材料一</span>
-              <button class="reel__window" type="button" aria-pressed="false" aria-label="材料一轉輪，點一下鎖定">
-                <span class="reel__strip"></span>
-                <span class="reel__lock">LOCK</span>
-              </button>
+
+            <button class="lever" type="button" aria-label="拉下拉桿">
+              <span class="lever__slot"></span>
+              <span class="lever__arm">
+                <span class="lever__stick"></span>
+                <span class="lever__knob"></span>
+              </span>
+              <span class="lever__base"></span>
+            </button>
+          </div>
+
+          <div class="screen" aria-live="polite">
+            <p class="screen__tag" id="screen-tag">點轉輪可以鎖定</p>
+            <p class="screen__main" id="screen-main">拉下拉桿！</p>
+          </div>
+
+          <button class="spin-btn" id="spin" type="button">SPIN</button>
+        </section>
+
+        <section class="card" id="recipe" hidden>
+          <p class="card__eyebrow" id="recipe-eyebrow">今晚調這杯</p>
+          <div class="card__head">
+            <h2 class="card__name" id="recipe-name"></h2>
+            <span class="tag" id="recipe-tag"></span>
+          </div>
+
+          <dl class="card__rows">
+            <dt>比例</dt>
+            <dd id="recipe-ratio"></dd>
+            <dt id="recipe-extra-label">加料</dt>
+            <dd id="recipe-extra"></dd>
+            <dt>口感</dt>
+            <dd id="recipe-taste"></dd>
+          </dl>
+
+          <div class="meters">
+            <div class="meter" data-kind="strength">
+              <span class="meter__label">酒感</span>
+              <span class="meter__cells"></span>
+              <span class="meter__value"></span>
             </div>
-            <div class="reel" data-reel="accent">
-              <span class="reel__label">材料二</span>
-              <button class="reel__window" type="button" aria-pressed="false" aria-label="材料二轉輪，點一下鎖定">
-                <span class="reel__strip"></span>
-                <span class="reel__lock">LOCK</span>
-              </button>
+            <div class="meter" data-kind="sweet">
+              <span class="meter__label">甜度</span>
+              <span class="meter__cells"></span>
+              <span class="meter__value"></span>
+            </div>
+            <div class="meter" data-kind="fizz">
+              <span class="meter__label">氣泡</span>
+              <span class="meter__cells"></span>
+              <span class="meter__value"></span>
             </div>
           </div>
 
-          <button class="lever" type="button" aria-label="拉下拉桿">
-            <span class="lever__slot"></span>
-            <span class="lever__arm">
-              <span class="lever__stick"></span>
-              <span class="lever__knob"></span>
-            </span>
-            <span class="lever__base"></span>
-          </button>
-        </div>
+          <p class="card__note">1 份 ≈ 一瓶 50ml 迷你酒，酒精濃度沒算冰塊融化，僅供參考</p>
 
-        <div class="screen" aria-live="polite">
-          <p class="screen__tag" id="screen-tag">點轉輪可以鎖定</p>
-          <p class="screen__main" id="screen-main">拉下拉桿！</p>
-        </div>
-
-        <button class="spin-btn" id="spin" type="button">SPIN</button>
+          <button class="share-btn" id="share" type="button">分享到 LINE</button>
+        </section>
       </section>
 
-      <section class="card" id="recipe" hidden>
-        <p class="card__eyebrow">今晚調這杯</p>
-        <div class="card__head">
-          <h2 class="card__name" id="recipe-name"></h2>
-          <span class="tag" id="recipe-tag"></span>
+      <section class="view" data-view="games" hidden>
+        <header class="page-head">
+          <h2 class="page-title">喝酒遊戲</h2>
+          <p class="page-sub">一支手機輪流傳，大家一起玩</p>
+        </header>
+        <nav class="game-grid" id="game-grid" aria-label="遊戲列表"></nav>
+      </section>
+
+      <section class="view" data-view="wheel" hidden>
+        <header class="game-head">
+          <a class="back-btn" href="#games">◀ 返回</a>
+          <h2 class="game-title">懲罰轉盤</h2>
+        </header>
+        <p class="game-rule">輪到的人按開始，燈停在哪格就照做。</p>
+        <div class="ring" id="wheel-ring">
+          <button class="ring__start" id="wheel-start" type="button">開始</button>
         </div>
-
-        <dl class="card__rows">
-          <dt>比例</dt>
-          <dd id="recipe-ratio"></dd>
-          <dt id="recipe-extra-label">加料</dt>
-          <dd id="recipe-extra"></dd>
-          <dt>口感</dt>
-          <dd id="recipe-taste"></dd>
-        </dl>
-
-        <div class="meters">
-          <div class="meter" data-kind="strength">
-            <span class="meter__label">酒感</span>
-            <span class="meter__cells"></span>
-            <span class="meter__value"></span>
-          </div>
-          <div class="meter" data-kind="sweet">
-            <span class="meter__label">甜度</span>
-            <span class="meter__cells"></span>
-            <span class="meter__value"></span>
-          </div>
-          <div class="meter" data-kind="fizz">
-            <span class="meter__label">氣泡</span>
-            <span class="meter__cells"></span>
-            <span class="meter__value"></span>
+        <div class="game-result" id="wheel-result" aria-live="polite" hidden></div>
+        <button class="btn btn--cream btn--small" id="wheel-edit" type="button">編輯選項</button>
+        <div class="panel wheel-editor" id="wheel-editor" hidden>
+          <div class="wheel-editor__list" id="wheel-inputs"></div>
+          <div class="btn-row">
+            <button class="btn btn--cream" id="wheel-reset" type="button">恢復預設</button>
+            <button class="btn btn--orange" id="wheel-save" type="button">儲存</button>
           </div>
         </div>
+      </section>
 
-        <p class="card__note">1 份 ≈ 一瓶 50ml 迷你酒，酒精濃度沒算冰塊融化，僅供參考</p>
+      <section class="view" data-view="number-bomb" hidden>
+        <header class="game-head">
+          <a class="back-btn" href="#games">◀ 返回</a>
+          <h2 class="game-title">數字炸彈</h2>
+        </header>
+        <p class="game-rule">炸彈藏在範圍裡。輪流輸入一個數字，範圍會越縮越小，猜中炸彈的人喝。</p>
+        <div class="screen">
+          <p class="screen__tag" id="nb-turn"></p>
+          <p class="nb-range" id="nb-range" aria-live="polite"></p>
+        </div>
+        <div class="nb-input" id="nb-input"></div>
+        <div class="keypad" id="nb-keypad"></div>
+        <button class="btn btn--cream btn--small" id="nb-restart" type="button">重新開始</button>
+      </section>
 
-        <button class="share-btn" id="share" type="button">分享到 LINE</button>
+      <section class="view" data-view="box-bomb" hidden>
+        <header class="game-head">
+          <a class="back-btn" href="#games">◀ 返回</a>
+          <h2 class="game-title">開箱炸彈</h2>
+        </header>
+        <p class="game-rule">箱子裡藏著炸彈，輪流開一箱，開到炸彈的人喝。</p>
+        <div class="settings">
+          <div class="stepper" id="bb-boxes"></div>
+          <div class="stepper" id="bb-bombs"></div>
+        </div>
+        <p class="game-status" id="bb-status" aria-live="polite"></p>
+        <div class="box-grid" id="bb-grid"></div>
+        <button class="btn btn--cream btn--small" id="bb-restart" type="button">重新開始</button>
+      </section>
+
+      <section class="view" data-view="hot-potato" hidden>
+        <header class="game-head">
+          <a class="back-btn" href="#games">◀ 返回</a>
+          <h2 class="game-title">傳手機炸彈</h2>
+        </header>
+        <p class="game-rule">按開始後炸彈會偷偷倒數。拿到手機的人說出一個符合題目的答案，再傳給下一個人，爆炸時拿著手機的人喝。</p>
+        <div class="hp-stage" id="hp-stage">
+          <div class="hp-bomb" id="hp-bomb"></div>
+          <p class="hp-label">說出一個⋯</p>
+          <p class="hp-topic" id="hp-topic">按開始抽題目</p>
+        </div>
+        <div class="segmented" id="hp-length" role="group" aria-label="炸彈時間">
+          <button type="button" data-value="short">短</button>
+          <button type="button" data-value="medium" class="is-active">中</button>
+          <button type="button" data-value="long">長</button>
+        </div>
+        <button class="btn btn--orange btn--big" id="hp-start" type="button">開始</button>
+        <button class="btn btn--cream btn--small" id="hp-skip" type="button">換題目</button>
+      </section>
+
+      <section class="view" data-view="kings-cup" hidden>
+        <header class="game-head">
+          <a class="back-btn" href="#games">◀ 返回</a>
+          <h2 class="game-title">國王杯</h2>
+        </header>
+        <p class="game-rule">中間放一個空杯當國王杯。輪流抽牌，照牌上的規則做。</p>
+        <p class="game-status" id="kc-status"></p>
+        <button class="playing-card is-back" id="kc-card" type="button" aria-label="抽一張牌">
+          <span class="playing-card__corner" id="kc-corner"></span>
+          <span class="playing-card__suit" id="kc-suit"></span>
+          <span class="playing-card__corner playing-card__corner--bottom" id="kc-corner-bottom"></span>
+        </button>
+        <div class="panel kc-rule" aria-live="polite">
+          <p class="kc-rule__title" id="kc-title"></p>
+          <p class="kc-rule__desc" id="kc-desc"></p>
+        </div>
+        <div class="game-result" id="kc-result" hidden></div>
+        <div class="btn-row">
+          <button class="btn btn--orange" id="kc-draw" type="button">抽牌</button>
+          <button class="btn btn--cream" id="kc-restart" type="button">重新洗牌</button>
+        </div>
+        <details class="panel rules-list">
+          <summary>全部規則</summary>
+          <dl id="kc-rules"></dl>
+        </details>
+      </section>
+
+      <section class="view" data-view="truth-dare" hidden>
+        <header class="game-head">
+          <a class="back-btn" href="#games">◀ 返回</a>
+          <h2 class="game-title">真心話大冒險</h2>
+        </header>
+        <p class="game-rule">選真心話或大冒險，不想回答或不敢做就喝一杯跳過。</p>
+        <div class="panel q-card" id="td-card" aria-live="polite">
+          <p class="q-card__type" id="td-type">真心話？大冒險？</p>
+          <p class="q-card__text" id="td-text">按下面的按鈕抽一題</p>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn--blue btn--big" id="td-truth" type="button">真心話</button>
+          <button class="btn btn--red btn--big" id="td-dare" type="button">大冒險</button>
+        </div>
+        <button class="btn btn--cream btn--small" id="td-random" type="button">隨機抽</button>
+      </section>
+
+      <section class="view" data-view="never" hidden>
+        <header class="game-head">
+          <a class="back-btn" href="#games">◀ 返回</a>
+          <h2 class="game-title">我從來沒有</h2>
+        </header>
+        <p class="game-rule">大家一起看題目，做過這件事的人喝一口。</p>
+        <div class="panel q-card" id="nv-card" aria-live="polite">
+          <p class="q-card__type">我從來沒有⋯</p>
+          <p class="q-card__text" id="nv-text">按下一題開始</p>
+          <p class="q-card__foot">做過的人喝一口！</p>
+        </div>
+        <p class="game-status" id="nv-status"></p>
+        <button class="btn btn--orange btn--big" id="nv-next" type="button">下一題</button>
+      </section>
+
+      <section class="view" data-view="spy" hidden>
+        <header class="game-head">
+          <a class="back-btn" href="#games">◀ 返回</a>
+          <h2 class="game-title">誰是臥底</h2>
+        </header>
+        <div id="spy-setup">
+          <p class="game-rule">大家拿到的詞都一樣，只有臥底不一樣（臥底自己也不知道）。輪流用一句話描述自己的詞，再投票淘汰可疑的人。</p>
+          <div class="settings">
+            <div class="stepper" id="spy-players"></div>
+            <div class="stepper" id="spy-spies"></div>
+          </div>
+          <button class="btn btn--orange btn--big" id="spy-start" type="button">開始發詞</button>
+        </div>
+        <div id="spy-reveal" hidden>
+          <p class="spy-who" id="spy-who"></p>
+          <button class="spy-word" id="spy-word" type="button"></button>
+          <button class="btn btn--orange btn--big" id="spy-next" type="button" disabled></button>
+        </div>
+        <div id="spy-play" hidden>
+          <p class="game-rule" id="spy-hint"></p>
+          <p class="game-status" id="spy-status" aria-live="polite"></p>
+          <div class="player-grid" id="spy-grid"></div>
+          <button class="btn btn--red btn--big" id="spy-out" type="button" hidden></button>
+        </div>
+        <div class="game-result" id="spy-result" hidden></div>
       </section>
 
       <footer class="footer">
-        <p class="notice">禁止酒駕・飲酒過量，有害健康<br />未滿 18 歲請勿飲酒</p>
+        <p class="notice"><span class="visitor" id="visitor" hidden></span>禁止酒駕・飲酒過量，有害健康<br />未滿 18 歲請勿飲酒</p>
         <button class="sound-btn" id="sound" type="button" aria-pressed="true">音效 開</button>
       </footer>
     </main>
+
+    <nav class="tabbar" aria-label="切換頁面">
+      <a class="tabbar__tab" href="#slot" data-tab="slot"><span class="tabbar__icon" id="tab-icon-slot"></span>調酒拉霸機</a>
+      <a class="tabbar__tab" href="#games" data-tab="games"><span class="tabbar__icon" id="tab-icon-games"></span>喝酒遊戲</a>
+    </nav>
+
+    <div class="boom" id="boom" role="alertdialog" aria-labelledby="boom-title" aria-describedby="boom-text" hidden>
+      <div class="boom__inner">
+        <div class="boom__sprite" id="boom-sprite"></div>
+        <p class="boom__title" id="boom-title">BOOM!</p>
+        <p class="boom__text" id="boom-text"></p>
+        <div class="boom__actions">
+          <button class="btn btn--orange btn--big" id="boom-loser" type="button">輸家去轉拉霸機</button>
+          <button class="btn btn--cream" id="boom-again" type="button">再玩一次</button>
+        </div>
+      </div>
+    </div>
     <script>
-      // 轉輪品項都是 7-11 買得到的東西（各門市進貨不同，大店品項較齊）
+      // 轉輪品項都是超商（以 7-11 為主）買得到的東西（各門市進貨不同，大店品項較齊）
       // sprite 對應 sprites.js 的圖樣；colors：a 主色、b 標籤、c 瓶蓋、e 標籤上的字
       // abv 酒精濃度（%）、sweet 甜度 0~3、fizz 氣泡 0~3，用來估算酒感、甜度、氣泡
       // flavor 用在沒有現成酒譜時，自動組出口感描述
@@ -1134,6 +2197,170 @@
           '................',
           '................',
         ],
+
+        // 以下是喝酒遊戲的圖示
+        wheel: [
+          '......kkkk......',
+          '.......kk.......',
+          '.....kkkkkk.....',
+          '...kkaaabbbkk...',
+          '..kaaaaabbbbbk..',
+          '..kaaaaabbbbbk..',
+          '..kaaaaabbbbbk..',
+          '..kaaaakkbbbbk..',
+          '..keeeekkcccck..',
+          '..keeeeeccccck..',
+          '..keeeeeccccck..',
+          '..keeeeeccccck..',
+          '...kkeeecccck...',
+          '.....kkkkkk.....',
+          '................',
+          '................',
+        ],
+        bomb: [
+          '............b...',
+          '..........b.bb..',
+          '...........bb...',
+          '..........c.....',
+          '.........c......',
+          '.....kkkkkk.....',
+          '....kwwaaaak....',
+          '...kwwaaaaaak...',
+          '...kwaaaaaaak...',
+          '...kaaaaaaaak...',
+          '...kaaaaaaaak...',
+          '...kaaaaaaadk...',
+          '....kaaaaadk....',
+          '.....kkkkkk.....',
+          '................',
+          '................',
+        ],
+        chest: [
+          '................',
+          '................',
+          '...kkkkkkkkkk...',
+          '..kaaaaaaaaaak..',
+          '..kaaaaaaaaaak..',
+          '..kbbbbbbbbbbk..',
+          '..kkkkkcckkkkk..',
+          '..kaaakcckaaak..',
+          '..kaaakkkkaaak..',
+          '..kaaaaaaaaaak..',
+          '..kbbbbbbbbbbk..',
+          '..kaaaaaaaaaak..',
+          '..kddddddddddk..',
+          '..kkkkkkkkkkkk..',
+          '................',
+          '................',
+        ],
+        phone: [
+          '................',
+          '....kkkkkkkk....',
+          '....kaaaaaak....',
+          '....kbbbbbbk....',
+          '....kbbeebbk....',
+          '....kbbeebbk....',
+          '....kbbeebbk....',
+          '....kbbbbbbk....',
+          '....kbbeebbk....',
+          '....kbbbbbbk....',
+          '....kbbbbbbk....',
+          '....kaaaaaak....',
+          '....kaakkaak....',
+          '....kaaaaaak....',
+          '....kkkkkkkk....',
+          '................',
+        ],
+        crown: [
+          '................',
+          '................',
+          '..k....kk....k..',
+          '..kk..kaak..kk..',
+          '..kak.kaak.kak..',
+          '..kaakaaaakaak..',
+          '..kaaaaaaaaaak..',
+          '..kaaaaaaaaaak..',
+          '..kabaabbaabak..',
+          '..kaaaaaaaaaak..',
+          '..kddddddddddk..',
+          '..kkkkkkkkkkkk..',
+          '................',
+          '................',
+          '................',
+          '................',
+        ],
+        bubble: [
+          '................',
+          '...kkkkkkkkkk...',
+          '..kaaaaaaaaaak..',
+          '..kaaaeeeeaaak..',
+          '..kaaeaaaaeaak..',
+          '..kaaaaaaaeaak..',
+          '..kaaaaaaeaaak..',
+          '..kaaaaaeaaaak..',
+          '..kaaaaaeaaaak..',
+          '..kaaaaaaaaaak..',
+          '..kaaaaaeaaaak..',
+          '..kaaaaaaaaaak..',
+          '...kkakkkkkkk...',
+          '....kak.........',
+          '....kk..........',
+          '................',
+        ],
+        martini: [
+          '................',
+          '................',
+          '..kkkkkkkkkkkk..',
+          '..kbbbbbbbbbbk..',
+          '...kbbbbbebbk...',
+          '....kbbbbbbk....',
+          '.....kbbbbk.....',
+          '......kbbk......',
+          '.......kk.......',
+          '.......kk.......',
+          '.......kk.......',
+          '.......kk.......',
+          '.....kkkkkk.....',
+          '................',
+          '................',
+          '................',
+        ],
+        spy: [
+          '................',
+          '................',
+          '.....kkkkkk.....',
+          '....kaaaaaak....',
+          '....kaaaaaak....',
+          '....kbbbbbbk....',
+          '.kkkkkkkkkkkkkk.',
+          '...kcccccccck...',
+          '...keeekkeeek...',
+          '...keeekkeeek...',
+          '...kcccccccck...',
+          '...kcckkkkcck...',
+          '....kcccccck....',
+          '.....kkkkkk.....',
+          '................',
+          '................',
+        ],
+        explosion: [
+          '................',
+          '......b..b......',
+          '..b...bbbb...b..',
+          '...bb.baab.bb...',
+          '....bbaaaabb....',
+          '.bbbbaaccaabbbb.',
+          '..bbaccccccabb..',
+          '...baccwwccab...',
+          '...baccwwccab...',
+          '..bbaccccccabb..',
+          '.bbbbaaccaabbbb.',
+          '....bbaaaabb....',
+          '...bb.baab.bb...',
+          '..b...bbbb...b..',
+          '......b..b......',
+          '................',
+        ],
       };
 
       const OUTLINE_COLOR = '#1b1b2f';
@@ -1249,15 +2476,17 @@
           return ctx;
         }
 
-        function tone(freq, duration, { delay = 0, volume = 0.05 } = {}) {
+        // slideTo：音高滑到這個頻率（爆炸聲用）
+        function tone(freq, duration, { delay = 0, volume = 0.05, type = 'square', slideTo } = {}) {
           if (!enabled) return;
           const c = context();
           if (!c) return;
           const start = c.currentTime + delay;
           const osc = c.createOscillator();
           const gain = c.createGain();
-          osc.type = 'square';
-          osc.frequency.value = freq;
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, start);
+          if (slideTo) osc.frequency.exponentialRampToValueAtTime(slideTo, start + duration);
           gain.gain.setValueAtTime(volume, start);
           gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
           osc.connect(gain);
@@ -1297,6 +2526,12 @@
           blip: (up) => tone(up ? 990 : 660, 0.06),
           win: () => [523, 659, 784, 1047, 784, 1047].forEach((f, i) => tone(f, 0.12, { delay: i * 0.09 })),
           lose: () => [392, 330, 262].forEach((f, i) => tone(f, 0.14, { delay: i * 0.12, volume: 0.04 })),
+          // progress 0~1，越接近 1 音越高（傳手機炸彈越來越急）
+          tick: (progress = 0) => tone(900 + 700 * progress, 0.03, { volume: 0.04 }),
+          boom() {
+            tone(220, 0.7, { type: 'sawtooth', slideTo: 30, volume: 0.12 });
+            tone(110, 0.5, { slideTo: 20, volume: 0.08, delay: 0.02 });
+          },
         };
       })();
 
@@ -1474,10 +2709,11 @@
 
       let winTimer = null;
 
-      function showResult(recipe) {
+      function showResult(recipe, loser = false) {
         const good = recipe.tag !== '實驗';
-        showScreen(SCREEN_TITLES[recipe.tag], recipe.name);
+        showScreen(loser ? '輸家請喝這杯' : SCREEN_TITLES[recipe.tag], recipe.name);
         renderCard(recipe);
+        $('recipe-eyebrow').textContent = loser ? '輸家喝這杯' : '今晚調這杯';
 
         clearTimeout(winTimer);
         cabinet.classList.toggle('is-win', good);
@@ -1505,7 +2741,8 @@
         shareBtn.disabled = busy;
       }
 
-      async function spin() {
+      // loser：從喝酒遊戲過來，幫輸家轉一杯
+      async function spin({ loser = false } = {}) {
         if (spinning) return;
         sound.unlock();
 
@@ -1537,7 +2774,7 @@
         sound.stopTicking();
         lastRecipe = recipe;
         currentRecipe = recipe;
-        showResult(recipe);
+        showResult(recipe, loser);
         setBusy(false);
       }
 
@@ -1554,7 +2791,7 @@
         if (!currentRecipe) return;
         const accent = currentRecipe.items[2];
         const lines = [
-          '🎰 7-11 調酒拉霸機',
+          '🎰 超商調酒拉霸機',
           `今晚調這杯：${currentRecipe.name}`,
           `比例：${ratioText(currentRecipe)}${accent.solid ? ` ＋ ${accent.name}` : ''}`,
           `口感：${currentRecipe.taste}`,
@@ -1589,8 +2826,8 @@
         reel.window.addEventListener('click', () => toggleLock(reel));
       });
 
-      spinBtn.addEventListener('click', spin);
-      lever.addEventListener('click', spin);
+      spinBtn.addEventListener('click', () => spin());
+      lever.addEventListener('click', () => spin());
       shareBtn.addEventListener('click', shareToLine);
       soundBtn.addEventListener('click', () => {
         sound.toggle();
@@ -1598,10 +2835,1070 @@
       });
       renderSoundBtn();
 
-      // 轉向或尺寸改變時格子高度會變，重新對齊
+      // 轉向或尺寸改變時格子高度會變，重新對齊（拉霸機頁藏起來時量不到高度，切回來再對齊）
       window.addEventListener('resize', () => {
-        if (!spinning) reels.forEach((reel) => placeAt(reel, 1));
+        if (!spinning && currentView?.dataset.view === 'slot') reels.forEach((reel) => placeAt(reel, 1));
       });
+
+      /* ====================================================================
+         喝酒遊戲：一支手機大家輪流操作
+         ==================================================================== */
+
+      /* ---------- 題庫 ---------- */
+
+      const WHEEL_DEFAULTS = ['自己喝一口', '左邊的人喝', '右邊的人喝', '全部乾杯', '指定一人喝', '真心話', '大冒險', '安全！'];
+
+      // 傳手機炸彈：說出一個⋯
+      const HOT_POTATO_TOPICS = [
+        '飲料名稱', '超商買得到的東西', '酒的種類', '水果', '動物', '台灣的縣市', '夜市小吃', '早餐店的餐點',
+        '零食餅乾', '手機 App', '歌手或樂團', '電影', '卡通人物', '運動項目', '職業', '國家',
+        '台北捷運站', '汽車品牌', '顏色', '蔬菜', '火鍋料', '文具', '家電', '衣服配件',
+        '樂器', '甜點', '日本料理', '電玩遊戲', '社群平台', '會飛的東西', '速食店', '手搖飲店',
+      ];
+
+      // 國王杯：每種點數的 [名稱, 規則]
+      const KINGS_CUP_RULES = {
+        A: ['瀑布', '大家一起開始喝，抽牌的人停了下一個才能停，依序往下'],
+        2: ['你喝', '指定一個人喝一口'],
+        3: ['我喝', '抽到的人自己喝一口'],
+        4: ['摸地板', '最後一個摸到地板的人喝'],
+        5: ['拍七', '輪流數數，遇到 7 的倍數或有 7 的數字要拍手，出錯的人喝'],
+        6: ['猜拳', '跟右邊的人猜拳，輸的人喝'],
+        7: ['天堂', '大家把手舉高，最後舉手的人喝'],
+        8: ['酒伴', '選一個酒伴，接下來你喝他也要陪喝'],
+        9: ['押韻', '說一個詞，大家輪流說押韻的詞，接不下去的人喝'],
+        10: ['類別', '選一個類別（例如飲料），輪流說，說不出來或重複的人喝'],
+        J: ['定規則', '訂一條規則到遊戲結束（例如不能說「喝」），違反的人喝'],
+        Q: ['問題王', '你變成問題王，誰回答你的問題就要喝，直到下一張 Q 出現'],
+        K: ['國王杯', '倒一點自己的酒到國王杯裡'],
+      };
+
+      const TRUTHS = [
+        '你最近一次哭是什麼時候？為什麼？',
+        '在場誰最符合你的理想型？',
+        '你做過最丟臉的事是什麼？',
+        '你手機裡最不想被看到的 App 是哪個？',
+        '你最後一次說謊是什麼時候？說了什麼？',
+        '你的初戀是幾歲的時候？',
+        '你曾經偷看過別人的手機嗎？',
+        '你最怕在場哪個人生氣？',
+        '你做過最瘋狂的事是什麼？',
+        '打開你最近的搜尋紀錄給大家看',
+        '在場誰最可能第一個結婚？',
+        '你最討厭自己哪一點？',
+        '如果可以跟在場一個人交換人生，你選誰？',
+        '你暗戀過幾個人？',
+        '你喝醉後做過最誇張的事？',
+        '你最後一則傳出去的訊息是傳給誰？內容是什麼？',
+        '你被告白過幾次？',
+        '你覺得在場誰最會說謊？',
+        '你最想刪掉的一段黑歷史？',
+        '你有沒有假裝生病請過假？',
+        '你目前最大的祕密是什麼？（可以只說一半）',
+        '你曾經對在場的誰有過好感嗎？',
+        '你最常幫自己找的藉口是什麼？',
+        '你做過最幼稚的事？',
+        '前任身上你最懷念哪一點？',
+        '你一個人在家最常做什麼奇怪的事？',
+        '你上一次心動是什麼時候？',
+        '如果明天是世界末日，今天你要做什麼？',
+        '你覺得自己最有魅力的地方是？',
+        '你有沒有已讀不回過在場的人？',
+        '你最不能接受另一半做什麼？',
+        '你收過最爛的禮物是什麼？',
+        '你最想對在場的誰說一句真心話？說吧',
+        '你的手機桌布是什麼？給大家看',
+        '你做過最後悔的決定？',
+        '你在 LINE 上收回過最尷尬的訊息是什麼？',
+        '你偷偷追蹤過誰的 IG 但從來不按讚？',
+        '你最近一次被罵是因為什麼？',
+        '在場誰的穿搭你最想偷學？',
+        '你覺得自己幾歲才會真正長大？',
+      ];
+
+      const DARES = [
+        '用最可愛的聲音說「我今天超美／超帥」',
+        '把相簿打開，讓左邊的人滑 10 秒',
+        '模仿在場一個人，讓大家猜是誰',
+        '用屁股在空中寫自己的名字',
+        '清唱一首歌的副歌',
+        '用台語自我介紹',
+        '原地做 10 下深蹲',
+        '跟右邊的人對看 10 秒，不能笑',
+        '用三種不同的聲音說「乾杯」',
+        '學一種動物叫，直到有人猜中',
+        '單腳站 30 秒',
+        '說一個冷笑話，沒人笑就再喝一口',
+        '用 rap 的方式介紹自己',
+        '用撒嬌的語氣跟右邊的人借錢',
+        '跳一段最近流行的舞',
+        '閉上眼睛讓大家餵你一口飲料，猜是什麼',
+        '用外國腔講話 30 秒',
+        '跟左邊的人交換一件配件，到下一輪',
+        '說出在場每個人的一個優點',
+        '用歌劇唱腔說「我要喝酒」',
+        '打給一個朋友說「我中樂透了」，撐 30 秒不笑',
+        '學在場一個人喝酒的樣子',
+        '表演一段默劇，讓大家猜是什麼',
+        '一口氣說出 10 種水果，卡住就喝',
+        '用手機前鏡頭做最醜的鬼臉，讓大家拍照',
+        '用播報新聞的語氣介紹右邊的人',
+        '接下來三輪說話結尾都要加「喵」',
+        '讓左邊的人用你的手機發一則限動（不敢就喝）',
+        '大喊「我最強」並做一個伏地挺身',
+        '用不常用的那隻手寫自己的名字給大家看',
+        '背對大家跳舞 15 秒',
+        '跟在場每個人擊掌並說「你最棒」',
+        '模仿右邊的人的坐姿，維持到下一輪',
+        '把你最近做過的夢演出來',
+        '接下來兩輪只能用氣音說話',
+        '用三個字形容在場每一個人',
+        '用最浮誇的方式稱讚你手上的飲料',
+        '對著手機錄一段 10 秒的告白，播給大家聽',
+        '讓大家幫你取一個綽號，今晚都要用',
+        '用你最近一張自拍當大頭貼 10 分鐘',
+      ];
+
+      // 前面都會接「我從來沒有⋯」
+      const NEVER_HAVE_I_EVER = [
+        '喝醉到斷片', '在公車或捷運上睡過站', '偷看別人的手機', '已讀不回超過一天', '假裝沒看到認識的人',
+        '在廁所滑手機超過 20 分鐘', '跟陌生人搭訕', '半夜偷吃宵夜被抓到', '傳錯訊息給錯的人', '在網路上跟人吵架',
+        '一個人去看電影', '一個人去吃火鍋', '為了追星去排隊', '考試作弊', '蹺課或蹺班',
+        '偷偷翻前任的社群', '被開過罰單', '在 KTV 唱到破音', '出國迷路', '在路上跌倒被看到',
+        '把衣服穿反出門', '忘記朋友的生日', '喜歡上朋友的朋友', '被甩', '甩過別人',
+        '夾娃娃花超過 500 元', '熬夜追劇到天亮', '在超商一次花超過 1000 元', '用假名認識新朋友', '在電梯裡放屁',
+        '在群組講別人壞話被本人看到', '刷爆信用卡', '吃飯忘記帶錢包', '偷用別人的串流帳號', '去過夜店',
+        '在交友軟體上配對成功', '對著鏡子練習告白', '哭著看完一部電影', '跟在場的人吵過架', '說好要減肥當天就破戒',
+        '在 LINE 收回訊息', '假裝很忙拒絕邀約', '喝酒喝到吐', '打電動打到天亮', '一個人去旅行',
+        '在大家面前忘詞', '睡過頭錯過重要的事', '偷偷哭過', '對店員說「你也是」', '說謊被當場抓包',
+      ];
+
+      // 誰是臥底：一組兩個相近的詞，隨機決定哪個給臥底
+      const SPY_WORDS = [
+        ['可樂', '雪碧'], ['珍珠奶茶', '紅茶拿鐵'], ['超商', '超市'], ['啤酒', '調酒'], ['威士忌', '白蘭地'],
+        ['高粱', '米酒'], ['火鍋', '燒肉'], ['滷肉飯', '雞肉飯'], ['鹽酥雞', '雞排'], ['鳳梨酥', '太陽餅'],
+        ['麥當勞', '肯德基'], ['咖啡', '奶茶'], ['牙刷', '牙膏'], ['捷運', '公車'], ['機車', '腳踏車'],
+        ['貓', '狗'], ['西瓜', '哈密瓜'], ['草莓', '櫻桃'], ['電影院', 'KTV'], ['夜市', '百貨公司'],
+        ['籃球', '排球'], ['吉他', '烏克麗麗'], ['眼鏡', '隱形眼鏡'], ['枕頭', '棉被'], ['冷氣', '電風扇'],
+        ['手機', '平板'], ['LINE', 'IG'], ['泡麵', '烏龍麵'], ['便當', '飯糰'], ['豆漿', '米漿'],
+        ['蛋餅', '蘿蔔糕'], ['雨傘', '雨衣'], ['拖鞋', '布鞋'], ['洗髮精', '沐浴乳'], ['口紅', '護唇膏'],
+        ['醫生', '護理師'], ['婚禮', '生日派對'], ['聖誕節', '跨年'], ['海邊', '泳池'], ['飛機', '高鐵'],
+      ];
+
+      const BOMB_COLORS = { a: '#3b3b4f', b: '#ffd23f', c: '#c49a6c' };
+      const CHEST_COLORS = { a: '#b5651d', b: '#e0b84a', c: '#ffd23f' };
+      const EXPLOSION_COLORS = { a: '#f47920', b: '#ffd23f', c: '#fff3c4', w: '#ffffff' };
+
+      const GAME_LIST = [
+        { id: 'wheel', name: '懲罰轉盤', desc: '燈停在哪格就照做', icon: 'wheel', colors: { a: '#e63946', b: '#ffd23f', c: '#2fb37f', e: '#4cb8f0' } },
+        { id: 'number-bomb', name: '數字炸彈', desc: '猜中炸彈數字的人喝', icon: 'bomb', colors: BOMB_COLORS },
+        { id: 'box-bomb', name: '開箱炸彈', desc: '開到炸彈的人喝', icon: 'chest', colors: CHEST_COLORS },
+        { id: 'hot-potato', name: '傳手機炸彈', desc: '爆炸時拿著的人喝', icon: 'phone', colors: { a: '#3b3b4f', b: '#7dffa8', e: '#e63946' } },
+        { id: 'kings-cup', name: '國王杯', desc: '抽牌照規則做', icon: 'crown', colors: { a: '#ffd23f', b: '#e63946' } },
+        { id: 'truth-dare', name: '真心話大冒險', desc: '不敢就喝', icon: 'bubble', colors: { a: '#ffffff', e: '#e63946' } },
+        { id: 'never', name: '我從來沒有', desc: '做過的人喝', icon: 'martini', colors: { a: '#4cb8f0', b: '#4cb8f0', e: '#7cb342' } },
+        { id: 'spy', name: '誰是臥底', desc: '找出詞不一樣的人', icon: 'spy', colors: { a: '#3b3b4f', b: '#e63946', c: '#f2c9a0', e: '#2b2d42' } },
+      ];
+
+      /* ---------- 共用 ---------- */
+
+      const controllers = {}; // 每個頁面的 enter／leave
+      let pendingLoserSpin = false;
+
+      // 遊戲輸了，跳到拉霸機幫輸家轉一杯
+      function loserSpin() {
+        pendingLoserSpin = true;
+        location.hash = '#slot';
+      }
+
+      function shuffle(list) {
+        const result = [...list];
+        for (let i = result.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [result[i], result[j]] = [result[j], result[i]];
+        }
+        return result;
+      }
+
+      // 洗好的牌一張一張抽，抽完才重洗，題目才不會一直重複
+      function makeBag(items) {
+        let bag = [];
+        return () => {
+          if (bag.length === 0) bag = shuffle(items);
+          return bag.pop();
+        };
+      }
+
+      function readStore(key, fallback) {
+        try {
+          const value = localStorage.getItem(key);
+          return value ? JSON.parse(value) : fallback;
+        } catch {
+          return fallback;
+        }
+      }
+
+      function writeStore(key, value) {
+        try {
+          localStorage.setItem(key, JSON.stringify(value));
+        } catch {
+          // 存不了就只在這次有效
+        }
+      }
+
+      // 重新觸發一次 CSS 動畫
+      function popIn(el, className = 'is-new') {
+        el.classList.remove(className);
+        void el.offsetWidth;
+        el.classList.add(className);
+      }
+
+      // － 數字 ＋ 的加減器
+      function createStepper(el, { label, min, max, value, onChange }) {
+        el.innerHTML = `
+          <span class="stepper__label">${label}</span>
+          <button class="btn" type="button" data-step="-1" aria-label="減少${label}">－</button>
+          <span class="stepper__value" aria-live="polite"></span>
+          <button class="btn" type="button" data-step="1" aria-label="增加${label}">＋</button>`;
+        const valueEl = el.querySelector('.stepper__value');
+        const [minus, plus] = el.querySelectorAll('[data-step]');
+        const stepper = {
+          value,
+          min,
+          max,
+          set(next) {
+            stepper.value = clamp(next, stepper.min, stepper.max);
+            valueEl.textContent = stepper.value;
+            minus.disabled = stepper.value <= stepper.min;
+            plus.disabled = stepper.value >= stepper.max;
+          },
+          setRange(nextMin, nextMax) {
+            stepper.min = nextMin;
+            stepper.max = nextMax;
+            stepper.set(stepper.value);
+          },
+        };
+        el.addEventListener('click', (event) => {
+          const btn = event.target.closest('[data-step]');
+          if (!btn || btn.disabled) return;
+          sound.unlock();
+          stepper.set(stepper.value + Number(btn.dataset.step));
+          sound.blip(true);
+          onChange?.(stepper.value);
+        });
+        stepper.set(value);
+        return stepper;
+      }
+
+      // 遊戲結果：液晶螢幕＋按鈕；loser 為 true 時加上「輸家去轉拉霸機」
+      function renderResult(el, { tag, text, note, loser = false, actions = [] }) {
+        el.innerHTML = `
+          <div class="screen"><p class="screen__tag"></p><p class="screen__main"></p></div>
+          ${note ? '<p class="game-status"></p>' : ''}
+          <div class="result-actions"></div>`;
+        el.querySelector('.screen__tag').textContent = tag;
+        el.querySelector('.screen__main').textContent = text;
+        if (note) el.querySelector('.game-status').textContent = note;
+
+        const buttons = [...(loser ? [{ label: '輸家去轉拉霸機', className: 'btn--orange', onClick: loserSpin }] : []), ...actions];
+        const box = el.querySelector('.result-actions');
+        buttons.forEach(({ label, className = 'btn--cream', onClick }) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = `btn ${className}`;
+          btn.textContent = label;
+          btn.addEventListener('click', onClick);
+          box.appendChild(btn);
+        });
+        el.hidden = false;
+      }
+
+      /* ---------- 爆炸畫面（三個炸彈遊戲共用） ---------- */
+
+      const boomEl = $('boom');
+      let boomAgain = null;
+
+      function showBoom({ text, onAgain }) {
+        $('boom-text').textContent = text;
+        boomAgain = onAgain;
+        boomEl.hidden = false;
+        popIn(document.body, 'is-shaking');
+        sound.boom();
+        vibrate([300, 80, 300]);
+      }
+
+      function hideBoom() {
+        boomEl.hidden = true;
+      }
+
+      $('boom-sprite').innerHTML = spriteSvg('explosion', EXPLOSION_COLORS);
+      $('boom-again').addEventListener('click', () => {
+        hideBoom();
+        boomAgain?.();
+      });
+      $('boom-loser').addEventListener('click', () => {
+        hideBoom();
+        loserSpin();
+      });
+
+      /* ---------- 拉霸機頁 ---------- */
+
+      controllers.slot = {
+        enter() {
+          // 藏起來的時候量不到格子高度，回來時重新對齊
+          if (!spinning) reels.forEach((reel) => placeAt(reel, 1));
+          if (pendingLoserSpin) {
+            pendingLoserSpin = false;
+            setTimeout(() => spin({ loser: true }), 400);
+          }
+        },
+      };
+
+      /* ---------- 懲罰轉盤（跑燈） ---------- */
+
+      const WHEEL_KEY = 'mix-slot-wheel';
+      // 外圈八格順時針的位置，中間是開始鈕
+      const RING_POSITIONS = [[1, 1], [1, 2], [1, 3], [2, 3], [3, 3], [3, 2], [3, 1], [2, 1]];
+
+      controllers.wheel = (() => {
+        const ring = $('wheel-ring');
+        const startBtn = $('wheel-start');
+        const resultEl = $('wheel-result');
+        const editor = $('wheel-editor');
+        const editBtn = $('wheel-edit');
+        const inputsEl = $('wheel-inputs');
+
+        let options = readStore(WHEEL_KEY, null);
+        if (!Array.isArray(options) || options.length !== WHEEL_DEFAULTS.length) options = [...WHEEL_DEFAULTS];
+
+        const cells = RING_POSITIONS.map(([row, col]) => {
+          const cell = document.createElement('div');
+          cell.className = 'ring__cell';
+          cell.style.gridArea = `${row} / ${col}`;
+          ring.appendChild(cell);
+          return cell;
+        });
+
+        let lit = -1;
+        let timer = null;
+
+        const renderCells = () => cells.forEach((cell, i) => (cell.textContent = options[i]));
+        const light = (index) => cells.forEach((cell, i) => cell.classList.toggle('is-lit', i === index));
+
+        function start() {
+          sound.unlock();
+          startBtn.disabled = true;
+          resultEl.hidden = true;
+          cells.forEach((cell) => cell.classList.remove('is-win'));
+
+          const from = Math.max(lit, 0);
+          const target = Math.floor(Math.random() * cells.length);
+          // 至少繞三圈，最後停在目標
+          const steps = cells.length * 3 + ((target - from + cells.length) % cells.length);
+          let step = 0;
+          lit = from;
+
+          const tick = () => {
+            lit = (lit + 1) % cells.length;
+            light(lit);
+            sound.tick(step / steps);
+            step += 1;
+            if (step >= steps) {
+              finish();
+              return;
+            }
+            timer = setTimeout(tick, 40 + 300 * (step / steps) ** 3); // 越轉越慢
+          };
+          tick();
+        }
+
+        function finish() {
+          timer = null;
+          startBtn.disabled = false;
+          const text = options[lit];
+          cells[lit].classList.add('is-win');
+
+          const safe = text.includes('安全');
+          const actions = [];
+          if (text.includes('真心話')) {
+            actions.push({ label: '抽一題真心話', className: 'btn--blue', onClick: () => openTruthDare('truth') });
+          }
+          if (text.includes('大冒險')) {
+            actions.push({ label: '抽一題大冒險', className: 'btn--red', onClick: () => openTruthDare('dare') });
+          }
+          renderResult(resultEl, {
+            tag: safe ? '★ 逃過一劫 ★' : '★ 轉盤結果 ★',
+            text,
+            loser: !safe && actions.length === 0,
+            actions,
+          });
+          if (safe) sound.win();
+          else sound.lose();
+          vibrate(80);
+        }
+
+        function makeInput(value, index) {
+          const input = document.createElement('input');
+          input.className = 'text-input';
+          input.type = 'text';
+          input.maxLength = 12;
+          input.value = value;
+          input.setAttribute('aria-label', `第 ${index + 1} 格`);
+          return input;
+        }
+
+        startBtn.addEventListener('click', start);
+        editBtn.addEventListener('click', () => {
+          inputsEl.replaceChildren(...options.map(makeInput));
+          editor.hidden = false;
+          editBtn.hidden = true;
+        });
+        $('wheel-reset').addEventListener('click', () => {
+          inputsEl.querySelectorAll('input').forEach((input, i) => (input.value = WHEEL_DEFAULTS[i]));
+        });
+        $('wheel-save').addEventListener('click', () => {
+          options = [...inputsEl.querySelectorAll('input')].map((input, i) => input.value.trim() || WHEEL_DEFAULTS[i]);
+          writeStore(WHEEL_KEY, options);
+          renderCells();
+          editor.hidden = true;
+          editBtn.hidden = false;
+          sound.blip(true);
+        });
+        renderCells();
+
+        return {
+          leave() {
+            if (!timer) return;
+            clearTimeout(timer);
+            timer = null;
+            startBtn.disabled = false;
+            light(-1);
+          },
+        };
+      })();
+
+      /* ---------- 數字炸彈 ---------- */
+
+      controllers['number-bomb'] = (() => {
+        const MIN = 1;
+        const MAX = 100;
+        const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '清除', '0', '確定'];
+        const keypad = $('nb-keypad');
+        const rangeEl = $('nb-range');
+        const turnEl = $('nb-turn');
+        const inputEl = $('nb-input');
+        let low;
+        let high;
+        let bomb;
+        let guesses;
+        let input;
+        let errorTimer = null;
+
+        keypad.innerHTML = KEYS.map(
+          (key) => `<button class="btn${key === '確定' ? ' btn--orange' : ''}" type="button" data-key="${key}">${key}</button>`,
+        ).join('');
+
+        function reset() {
+          low = MIN;
+          high = MAX;
+          bomb = MIN + Math.floor(Math.random() * (MAX - MIN + 1));
+          guesses = 0;
+          input = '';
+          render();
+        }
+
+        function render(message) {
+          rangeEl.textContent = `${low} ～ ${high}`;
+          turnEl.textContent = low === high ? '只剩一個數字，輪到的人中彈！' : `第 ${guesses + 1} 次猜`;
+          inputEl.textContent = message || input || '輸入數字';
+          inputEl.classList.toggle('is-placeholder', !input && !message);
+        }
+
+        function submit() {
+          const guess = Number(input);
+          input = '';
+          if (!guess || guess < low || guess > high) {
+            popIn(inputEl, 'is-error');
+            render(`請輸入 ${low}～${high}`);
+            sound.blip(false);
+            errorTimer = setTimeout(() => {
+              inputEl.classList.remove('is-error');
+              render();
+            }, 1200);
+            return;
+          }
+
+          guesses += 1;
+          if (guess === bomb) {
+            render();
+            showBoom({ text: `炸彈就是 ${bomb}！猜中的人喝`, onAgain: reset });
+            return;
+          }
+          if (guess < bomb) low = guess + 1;
+          else high = guess - 1;
+          sound.tick();
+          vibrate(20);
+          render();
+        }
+
+        keypad.addEventListener('click', (event) => {
+          const key = event.target.closest('[data-key]')?.dataset.key;
+          if (!key) return;
+          sound.unlock();
+          clearTimeout(errorTimer);
+          inputEl.classList.remove('is-error');
+          if (key === '確定') {
+            submit();
+            return;
+          }
+          if (key === '清除') input = '';
+          else if (input.length < 3) input = String(Number(input + key)); // 去掉開頭的 0
+          sound.blip(true);
+          render();
+        });
+
+        $('nb-restart').addEventListener('click', () => {
+          reset();
+          sound.blip(true);
+        });
+        reset();
+        return {};
+      })();
+
+      /* ---------- 開箱炸彈 ---------- */
+
+      controllers['box-bomb'] = (() => {
+        const grid = $('bb-grid');
+        const statusEl = $('bb-status');
+        const chest = spriteSvg('chest', CHEST_COLORS);
+        const explosion = spriteSvg('explosion', EXPLOSION_COLORS);
+        let bombs = new Set();
+        let opened = 0;
+        let over = false;
+
+        const boxCount = createStepper($('bb-boxes'), {
+          label: '箱子',
+          min: 6,
+          max: 20,
+          value: 12,
+          onChange: (value) => {
+            bombCount.setRange(1, Math.floor(value / 3));
+            reset();
+          },
+        });
+        const bombCount = createStepper($('bb-bombs'), { label: '炸彈', min: 1, max: 4, value: 1, onChange: () => reset() });
+
+        function reset() {
+          over = false;
+          opened = 0;
+          const total = boxCount.value;
+          bombs = new Set(shuffle([...Array(total).keys()]).slice(0, bombCount.value));
+          grid.innerHTML = Array.from(
+            { length: total },
+            (_, i) =>
+              `<button class="box" type="button" data-index="${i}" aria-label="第 ${i + 1} 箱">${chest}<span class="box__num">${i + 1}</span><span class="box__label"></span></button>`,
+          ).join('');
+          renderStatus();
+        }
+
+        function renderStatus() {
+          const left = boxCount.value - opened;
+          statusEl.textContent = over ? '炸了！' : `剩 ${left} 箱・下一箱中彈機率 ${bombCount.value}/${left}`;
+        }
+
+        grid.addEventListener('click', (event) => {
+          const box = event.target.closest('.box');
+          if (!box || box.disabled || over) return;
+          sound.unlock();
+          const index = Number(box.dataset.index);
+          box.disabled = true;
+          box.classList.add('is-open');
+
+          if (bombs.has(index)) {
+            over = true;
+            box.classList.add('is-bomb');
+            box.querySelector('svg').outerHTML = explosion;
+            renderStatus();
+            setTimeout(() => showBoom({ text: `第 ${index + 1} 箱是炸彈！開到的人喝`, onAgain: reset }), 250);
+            return;
+          }
+
+          opened += 1;
+          box.querySelector('.box__label').textContent = '安全';
+          sound.tick(opened / boxCount.value);
+          vibrate(15);
+          renderStatus();
+        });
+
+        $('bb-restart').addEventListener('click', () => {
+          reset();
+          sound.blip(true);
+        });
+        bombCount.setRange(1, Math.floor(boxCount.value / 3));
+        reset();
+        return {};
+      })();
+
+      /* ---------- 傳手機炸彈 ---------- */
+
+      controllers['hot-potato'] = (() => {
+        const LENGTHS = { short: [10, 20], medium: [20, 40], long: [40, 70] }; // 秒數範圍
+        const stage = $('hp-stage');
+        const topicEl = $('hp-topic');
+        const startBtn = $('hp-start');
+        const lengthEl = $('hp-length');
+        const nextTopic = makeBag(HOT_POTATO_TOPICS);
+        let length = 'medium';
+        let timer = null;
+        let startedAt = 0;
+        let duration = 0;
+
+        $('hp-bomb').innerHTML = spriteSvg('bomb', BOMB_COLORS);
+
+        function start() {
+          sound.unlock();
+          const [min, max] = LENGTHS[length];
+          duration = (min + Math.random() * (max - min)) * 1000;
+          startedAt = Date.now();
+          topicEl.textContent = nextTopic();
+          stage.classList.add('is-running');
+          startBtn.disabled = true;
+          startBtn.textContent = '倒數中，快傳！';
+          tick();
+        }
+
+        // 越接近爆炸滴答越快，但看不出確切什麼時候爆
+        function tick() {
+          const elapsed = Date.now() - startedAt;
+          if (elapsed >= duration) {
+            explode();
+            return;
+          }
+          const progress = elapsed / duration;
+          const interval = 700 - 580 * progress;
+          stage.style.setProperty('--pulse', `${Math.round(interval * 2)}ms`);
+          sound.tick(progress);
+          timer = setTimeout(tick, Math.min(interval, duration - elapsed));
+        }
+
+        function stop() {
+          clearTimeout(timer);
+          timer = null;
+          stage.classList.remove('is-running');
+          startBtn.disabled = false;
+          startBtn.textContent = '開始';
+        }
+
+        function explode() {
+          stop();
+          showBoom({ text: `題目：${topicEl.textContent}\n爆炸時拿著手機的人喝！`, onAgain: start });
+        }
+
+        lengthEl.addEventListener('click', (event) => {
+          const btn = event.target.closest('[data-value]');
+          if (!btn) return;
+          length = btn.dataset.value;
+          lengthEl.querySelectorAll('button').forEach((b) => b.classList.toggle('is-active', b === btn));
+          sound.blip(true);
+        });
+        startBtn.addEventListener('click', start);
+        $('hp-skip').addEventListener('click', () => {
+          topicEl.textContent = nextTopic();
+          sound.blip(true);
+        });
+
+        // 離開這頁就停止倒數
+        return { leave: stop };
+      })();
+
+      /* ---------- 國王杯 ---------- */
+
+      controllers['kings-cup'] = (() => {
+        const SUITS = [
+          { suit: '♠', red: false },
+          { suit: '♥', red: true },
+          { suit: '♦', red: true },
+          { suit: '♣', red: false },
+        ];
+        const RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
+        const cardEl = $('kc-card');
+        const titleEl = $('kc-title');
+        const descEl = $('kc-desc');
+        const statusEl = $('kc-status');
+        const resultEl = $('kc-result');
+        let deck = [];
+        let kings = 0;
+
+        $('kc-rules').innerHTML = RANKS.map(
+          (rank) => `<dt>${rank} ${KINGS_CUP_RULES[rank][0]}</dt><dd>${KINGS_CUP_RULES[rank][1]}</dd>`,
+        ).join('');
+
+        function reset() {
+          deck = shuffle(SUITS.flatMap(({ suit, red }) => RANKS.map((rank) => ({ rank, suit, red }))));
+          kings = 0;
+          cardEl.classList.add('is-back');
+          cardEl.classList.remove('is-red');
+          titleEl.textContent = '點牌抽一張';
+          descEl.textContent = '抽到第四張 K 的人要喝光國王杯';
+          resultEl.hidden = true;
+          renderStatus();
+        }
+
+        function renderStatus() {
+          statusEl.textContent = `剩 ${deck.length} 張・國王杯 K ${'■'.repeat(kings)}${'□'.repeat(4 - kings)}`;
+        }
+
+        function draw() {
+          sound.unlock();
+          if (kings === 4 || deck.length === 0) {
+            titleEl.textContent = kings === 4 ? '這局結束了' : '牌抽完了';
+            descEl.textContent = '按重新洗牌再玩一輪';
+            sound.blip(false);
+            return;
+          }
+
+          const card = deck.pop();
+          popIn(cardEl, 'is-flipping');
+          // 翻到一半再換牌面
+          setTimeout(() => {
+            cardEl.classList.remove('is-back');
+            cardEl.classList.toggle('is-red', card.red);
+            $('kc-corner').textContent = `${card.rank}\n${card.suit}`;
+            $('kc-corner-bottom').textContent = `${card.rank}\n${card.suit}`;
+            $('kc-suit').textContent = card.suit;
+          }, 150);
+
+          let [title, desc] = KINGS_CUP_RULES[card.rank];
+          if (card.rank === 'K') {
+            kings += 1;
+            if (kings === 4) {
+              title = '喝光國王杯！';
+              desc = '第四張 K 出現了，把國王杯裡的酒全部喝完';
+              renderResult(resultEl, {
+                tag: '★ 第四張 K ★',
+                text: '抽到的人喝光國王杯',
+                loser: true,
+                actions: [{ label: '重新洗牌', onClick: reset }],
+              });
+              sound.lose();
+              vibrate([200, 80, 200]);
+            } else {
+              desc += `（還差 ${4 - kings} 張 K）`;
+            }
+          }
+          if (kings < 4) sound.tick();
+          titleEl.textContent = `${card.rank}　${title}`;
+          descEl.textContent = desc;
+          renderStatus();
+        }
+
+        cardEl.addEventListener('click', draw);
+        $('kc-draw').addEventListener('click', draw);
+        $('kc-restart').addEventListener('click', () => {
+          reset();
+          sound.blip(true);
+        });
+        reset();
+        return {};
+      })();
+
+      /* ---------- 真心話大冒險 ---------- */
+
+      let pendingTruthDare = null;
+
+      // 從轉盤轉到真心話／大冒險時，直接抽一題
+      function openTruthDare(type) {
+        pendingTruthDare = type;
+        location.hash = '#truth-dare';
+      }
+
+      controllers['truth-dare'] = (() => {
+        const cardEl = $('td-card');
+        const typeEl = $('td-type');
+        const textEl = $('td-text');
+        const nextTruth = makeBag(TRUTHS);
+        const nextDare = makeBag(DARES);
+
+        function draw(type) {
+          sound.unlock();
+          const truth = type === 'truth';
+          typeEl.textContent = truth ? '真心話' : '大冒險';
+          typeEl.className = `q-card__type ${truth ? 'is-truth' : 'is-dare'}`;
+          textEl.textContent = truth ? nextTruth() : nextDare();
+          popIn(cardEl);
+          sound.blip(true);
+        }
+
+        $('td-truth').addEventListener('click', () => draw('truth'));
+        $('td-dare').addEventListener('click', () => draw('dare'));
+        $('td-random').addEventListener('click', () => draw(Math.random() < 0.5 ? 'truth' : 'dare'));
+
+        return {
+          enter() {
+            if (!pendingTruthDare) return;
+            draw(pendingTruthDare);
+            pendingTruthDare = null;
+          },
+        };
+      })();
+
+      /* ---------- 我從來沒有 ---------- */
+
+      controllers.never = (() => {
+        const cardEl = $('nv-card');
+        const next = makeBag(NEVER_HAVE_I_EVER);
+        let count = 0;
+
+        $('nv-next').addEventListener('click', () => {
+          sound.unlock();
+          count += 1;
+          $('nv-text').textContent = next();
+          $('nv-status').textContent = `第 ${count} 題（共 ${NEVER_HAVE_I_EVER.length} 題，抽完才會重複）`;
+          popIn(cardEl);
+          sound.blip(true);
+        });
+        return {};
+      })();
+
+      /* ---------- 誰是臥底 ---------- */
+
+      controllers.spy = (() => {
+        const setupEl = $('spy-setup');
+        const revealEl = $('spy-reveal');
+        const playEl = $('spy-play');
+        const resultEl = $('spy-result');
+        const wordBtn = $('spy-word');
+        const nextBtn = $('spy-next');
+        const grid = $('spy-grid');
+        const outBtn = $('spy-out');
+        const statusEl = $('spy-status');
+        const nextPair = makeBag(SPY_WORDS);
+        // 3～6 人 1 個臥底，7～9 人最多 2 個，10 人以上最多 3 個
+        const maxSpies = (players) => Math.max(1, Math.floor((players - 1) / 3));
+        let game = null;
+
+        const playerCount = createStepper($('spy-players'), {
+          label: '玩家人數',
+          min: 3,
+          max: 12,
+          value: 5,
+          onChange: (value) => spyCount.setRange(1, maxSpies(value)),
+        });
+        const spyCount = createStepper($('spy-spies'), { label: '臥底人數', min: 1, max: maxSpies(5), value: 1 });
+
+        function showStep(step) {
+          [setupEl, revealEl, playEl].forEach((el) => (el.hidden = el !== step));
+          resultEl.hidden = true;
+        }
+
+        function start() {
+          sound.unlock();
+          const players = playerCount.value;
+          let [civilian, spy] = nextPair();
+          if (Math.random() < 0.5) [civilian, spy] = [spy, civilian];
+          const spyIndexes = new Set(shuffle([...Array(players).keys()]).slice(0, spyCount.value));
+          game = {
+            civilian,
+            spy,
+            isSpy: Array.from({ length: players }, (_, i) => spyIndexes.has(i)),
+            out: Array(players).fill(false),
+            turn: 0,
+            selected: null,
+            over: false,
+          };
+          showStep(revealEl);
+          renderReveal();
+        }
+
+        // 發詞：手機傳到誰，誰點開看自己的詞
+        function renderReveal() {
+          const last = game.turn === game.isSpy.length - 1;
+          $('spy-who').innerHTML = `請 <strong>${game.turn + 1} 號</strong> 拿手機`;
+          wordBtn.innerHTML = '<span>點這裡看你的詞</span><small>別讓其他人看到</small>';
+          wordBtn.dataset.shown = 'false';
+          nextBtn.disabled = true;
+          nextBtn.textContent = last ? '記住了，開始遊戲' : '記住了，傳給下一位';
+        }
+
+        wordBtn.addEventListener('click', () => {
+          if (wordBtn.dataset.shown === 'true') {
+            wordBtn.innerHTML = '<span>已蓋住，點一下再看一次</span>';
+            wordBtn.dataset.shown = 'false';
+            return;
+          }
+          wordBtn.innerHTML = '<small>你的詞是</small><strong></strong><small>再點一下蓋住</small>';
+          wordBtn.querySelector('strong').textContent = game.isSpy[game.turn] ? game.spy : game.civilian;
+          wordBtn.dataset.shown = 'true';
+          nextBtn.disabled = false;
+          sound.blip(true);
+        });
+
+        nextBtn.addEventListener('click', () => {
+          game.turn += 1;
+          if (game.turn < game.isSpy.length) {
+            renderReveal();
+            sound.blip(true);
+            return;
+          }
+          startPlay();
+        });
+
+        function startPlay() {
+          showStep(playEl);
+          const first = Math.floor(Math.random() * game.isSpy.length) + 1;
+          $('spy-hint').textContent = `從 ${first} 號開始，每人用一句話描述自己的詞（不能直接說出來）。說完一輪後投票，把票最多的人點出來淘汰。`;
+          renderPlayers();
+          sound.win();
+        }
+
+        function counts() {
+          const spies = game.isSpy.filter((isSpy, i) => isSpy && !game.out[i]).length;
+          const alive = game.out.filter((out) => !out).length;
+          return { spies, civilians: alive - spies, alive };
+        }
+
+        function renderPlayers(message = '') {
+          grid.innerHTML = game.isSpy
+            .map((isSpy, i) => {
+              const revealed = game.out[i] || game.over;
+              const classes = ['player', revealed && isSpy && 'is-spy', game.selected === i && 'is-selected'].filter(Boolean).join(' ');
+              const role = revealed ? `<small>${isSpy ? '臥底' : '平民'}</small>` : '';
+              return `<button class="${classes}" type="button" data-index="${i}"${revealed ? ' disabled' : ''}>${i + 1} 號${role}</button>`;
+            })
+            .join('');
+          const { spies, alive } = counts();
+          statusEl.textContent = message || `還有 ${alive} 人，其中臥底 ${spies} 人`;
+          outBtn.hidden = game.selected === null || game.over;
+          if (game.selected !== null) outBtn.textContent = `淘汰 ${game.selected + 1} 號`;
+        }
+
+        // 先點選、再按淘汰，避免一個誤觸就淘汰掉
+        grid.addEventListener('click', (event) => {
+          const btn = event.target.closest('.player');
+          if (!btn || btn.disabled) return;
+          const index = Number(btn.dataset.index);
+          game.selected = game.selected === index ? null : index;
+          sound.blip(true);
+          renderPlayers();
+        });
+
+        outBtn.addEventListener('click', () => {
+          const index = game.selected;
+          if (index === null) return;
+          game.out[index] = true;
+          game.selected = null;
+          const wasSpy = game.isSpy[index];
+          const { spies, civilians } = counts();
+          if (spies === 0 || spies >= civilians) {
+            end(spies === 0);
+            return;
+          }
+          if (wasSpy) sound.win();
+          else sound.lose();
+          vibrate(60);
+          renderPlayers(`${index + 1} 號是${wasSpy ? '臥底！' : '平民⋯'}還有 ${spies} 個臥底，繼續下一輪`);
+        });
+
+        function end(civiliansWin) {
+          game.over = true;
+          renderPlayers(civiliansWin ? '臥底全部抓到了！' : '臥底撐到最後了！');
+          const spyNumbers = game.isSpy
+            .map((isSpy, i) => (isSpy ? `${i + 1} 號` : null))
+            .filter(Boolean)
+            .join('、');
+          renderResult(resultEl, {
+            tag: civiliansWin ? '★ 平民獲勝 ★' : '★ 臥底獲勝 ★',
+            text: civiliansWin ? '臥底喝！' : '平民每人喝一口',
+            note: `平民的詞：${game.civilian}　臥底的詞：${game.spy}\n臥底是 ${spyNumbers}`,
+            loser: true,
+            actions: [
+              { label: '再來一局', onClick: start },
+              { label: '改人數', onClick: () => showStep(setupEl) },
+            ],
+          });
+          if (civiliansWin) sound.win();
+          else sound.lose();
+          vibrate([100, 60, 100]);
+          resultEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        $('spy-start').addEventListener('click', start);
+        return {};
+      })();
+
+      /* ---------- 瀏覽人數（GoatCounter） ---------- */
+
+      // 到 https://www.goatcounter.com 註冊後把代碼填在這裡（例如 'mixslot'），
+      // 並在 GoatCounter 設定打開「Allow adding visitor counts on your website」，
+      // 就會開始記錄瀏覽人數，頁尾顯示「你是第 N 個酒鬼」
+      const GOATCOUNTER_CODE = '';
+
+      function setupVisitorCounter() {
+        if (!GOATCOUNTER_CODE || !location.protocol.startsWith('http')) return;
+        const base = `https://${GOATCOUNTER_CODE}.goatcounter.com`;
+
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://gc.zgo.at/count.js';
+        script.dataset.goatcounter = `${base}/count`;
+        document.head.appendChild(script);
+
+        // 切換頁面各記一筆，才看得出哪個遊戲最多人玩
+        window.addEventListener('hashchange', () => {
+          window.goatcounter?.count?.({ path: location.pathname + location.hash });
+        });
+
+        // 總數有快取（最多四小時），所以是大概的數字
+        fetch(`${base}/counter/TOTAL.json`)
+          .then((res) => (res.ok ? res.json() : Promise.reject(new Error(String(res.status)))))
+          .then(({ count }) => {
+            const total = Number(String(count).replace(/\D/g, '')) + 1;
+            $('visitor').textContent = `你是第 ${total.toLocaleString()} 個酒鬼`;
+            $('visitor').hidden = false;
+          })
+          .catch(() => {
+            // 沒開放計數或連不上就不顯示
+          });
+      }
+
+      /* ---------- 切換頁面 ---------- */
+
+      const views = [...document.querySelectorAll('.view')];
+      const tabs = [...document.querySelectorAll('.tabbar__tab')];
+      let currentView = null;
+
+      // 網址的 # 決定顯示哪一頁，LINE 和瀏覽器的上一頁也能用
+      function route() {
+        const id = location.hash.slice(1) || 'slot';
+        const view = views.find((v) => v.dataset.view === id) || views[0];
+        if (view === currentView) return;
+
+        hideBoom();
+        if (currentView) controllers[currentView.dataset.view]?.leave?.();
+        views.forEach((v) => (v.hidden = v !== view));
+        currentView = view;
+
+        const tab = view.dataset.view === 'slot' ? 'slot' : 'games';
+        tabs.forEach((t) => {
+          const active = t.dataset.tab === tab;
+          t.classList.toggle('is-active', active);
+          if (active) t.setAttribute('aria-current', 'page');
+          else t.removeAttribute('aria-current');
+        });
+        window.scrollTo(0, 0);
+        controllers[view.dataset.view]?.enter?.();
+      }
+
+      $('game-grid').innerHTML = GAME_LIST.map(
+        (game) =>
+          `<a class="game-card" href="#${game.id}">${spriteSvg(game.icon, game.colors)}<span class="game-card__name">${game.name}</span><span class="game-card__desc">${game.desc}</span></a>`,
+      ).join('');
+      $('tab-icon-slot').innerHTML = spriteSvg('squareBottle', BASES[0].colors);
+      $('tab-icon-games').innerHTML = spriteSvg('bomb', BOMB_COLORS);
+
+      window.addEventListener('hashchange', route);
+      route();
+      setupVisitorCounter();
     </script>
   </body>
 </html>
