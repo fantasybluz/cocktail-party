@@ -5,6 +5,7 @@ interface Props {
   ref: Ref<HTMLElement>
   recipe: Recipe
   loser: boolean
+  devil: boolean
   shareDisabled: boolean
   onShare: () => void
 }
@@ -23,12 +24,12 @@ function Meter({ kind, label, level, value }: { kind: string; label: string; lev
   )
 }
 
-export function RecipeCard({ ref, recipe, loser, shareDisabled, onShare }: Props) {
+export function RecipeCard({ ref, recipe, loser, devil, shareDisabled, onShare }: Props) {
   const accent = recipe.items[2]
   const result = estimate(recipe)
 
   return (
-    <section ref={ref} className="card" id="recipe">
+    <section ref={ref} className={devil ? 'card is-devil' : 'card'} id="recipe">
       <p className="card__eyebrow" id="recipe-eyebrow">
         {loser ? '輸家喝這杯' : '今晚調這杯'}
       </p>
@@ -54,6 +55,14 @@ export function RecipeCard({ ref, recipe, loser, shareDisabled, onShare }: Props
         )}
         <dt>口感</dt>
         <dd id="recipe-taste">{recipe.taste}</dd>
+        {recipe.warning && (
+          <>
+            <dt className="card__warning-label">注意</dt>
+            <dd className="card__warning" id="recipe-warning">
+              {recipe.warning}
+            </dd>
+          </>
+        )}
       </dl>
 
       <div className="meters">
@@ -62,7 +71,13 @@ export function RecipeCard({ ref, recipe, loser, shareDisabled, onShare }: Props
         <Meter kind="fizz" label="氣泡" level={result.fizz} value={fizzLabel(result.fizz)} />
       </div>
 
-      <p className="card__note">1 份 ≈ 一瓶 50ml 迷你酒，酒精濃度沒算冰塊融化，僅供參考</p>
+      {devil ? (
+        <p className="card__note card__note--devil">
+          惡魔模式 1 份 ≈ 一個 shot 杯（30ml）。濃度很高：量力而為、不要空腹、喝了不開車，不舒服就停。
+        </p>
+      ) : (
+        <p className="card__note">1 份 ≈ 一瓶 50ml 迷你酒，酒精濃度沒算冰塊融化，僅供參考</p>
+      )}
 
       <button className="share-btn" id="share" type="button" disabled={shareDisabled} onClick={onShare}>
         分享到 LINE

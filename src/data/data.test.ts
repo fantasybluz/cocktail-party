@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { SPRITES, type SpriteColors, type SpriteName } from '../lib/sprites.ts'
-import { ACCENTS, BASES, MIXERS, RECIPES } from './drinks.ts'
+import { ACCENTS, BASES, BEER, DEVIL_MIN_ABV, DEVIL_RECIPES, DEVIL_SHOTS, MIXERS, RECIPES } from './drinks.ts'
 import {
   BOMB_COLORS,
   CHEST_COLORS,
@@ -26,7 +26,9 @@ describe('像素圖樣', () => {
   })
 
   const uses: [string, SpriteName, SpriteColors][] = [
-    ...[...BASES, ...MIXERS, ...ACCENTS].map((item) => [item.name, item.sprite, item.colors] as [string, SpriteName, SpriteColors]),
+    ...[...BASES, ...MIXERS, ...ACCENTS, BEER, ...DEVIL_SHOTS].map(
+      (item) => [item.name, item.sprite, item.colors] as [string, SpriteName, SpriteColors],
+    ),
     ...GAME_LIST.map((game) => [game.name, game.icon, game.colors] as [string, SpriteName, SpriteColors]),
     ['炸彈', 'bomb', BOMB_COLORS],
     ['寶箱', 'chest', CHEST_COLORS],
@@ -48,10 +50,26 @@ describe('酒譜', () => {
   })
 
   it('每個品項至少出現在一杯酒譜', () => {
-    const used = new Set(RECIPES.flatMap((recipe) => recipe.items))
-    const unused = [...BASES, ...MIXERS, ...ACCENTS].map((i) => i.name).filter((name) => !used.has(name))
+    const used = new Set([...RECIPES, ...DEVIL_RECIPES].flatMap((recipe) => recipe.items))
+    const unused = [...BASES, ...MIXERS, ...ACCENTS, BEER, ...DEVIL_SHOTS]
+      .map((i) => i.name)
+      .filter((name) => !used.has(name))
     expect(unused).toEqual([])
   })
+
+  it.each(DEVIL_RECIPES.map((recipe) => [recipe.name, recipe] as const))(
+    '惡魔酒譜 %s 用的是烈酒、加烈品項，而且有寫注意事項',
+    (_, recipe) => {
+      const [base, mixer, shot] = recipe.items
+      const baseItem = BASES.find((i) => i.name === base)
+      expect(baseItem?.abv).toBeGreaterThanOrEqual(DEVIL_MIN_ABV)
+      expect([...MIXERS, BEER].map((i) => i.name)).toContain(mixer)
+      expect(DEVIL_SHOTS.map((i) => i.name)).toContain(shot)
+      expect(recipe.tag).toBe('惡魔')
+      expect(recipe.parts).toHaveLength(3)
+      expect(recipe.warning).toBeTruthy()
+    },
+  )
 
   it('基酒都有濃度和預設比例', () => {
     BASES.forEach((base) => {

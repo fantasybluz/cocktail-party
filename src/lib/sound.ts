@@ -89,6 +89,11 @@ export const sound = {
   lose: () => [392, 330, 262].forEach((f, i) => tone(f, 0.14, { delay: i * 0.12, volume: 0.04 })),
   // progress 0~1，越接近 1 音越高（傳手機炸彈越來越急）
   tick: (progress = 0) => tone(900 + 700 * progress, 0.03, { volume: 0.04 }),
+  // 打開惡魔開關：往下滑的低吼
+  devil() {
+    tone(240, 0.5, { type: 'sawtooth', slideTo: 60, volume: 0.08 })
+    tone(160, 0.6, { slideTo: 40, volume: 0.06, delay: 0.12 })
+  },
   boom() {
     tone(220, 0.7, { type: 'sawtooth', slideTo: 30, volume: 0.12 })
     tone(110, 0.5, { slideTo: 20, volume: 0.08, delay: 0.02 })

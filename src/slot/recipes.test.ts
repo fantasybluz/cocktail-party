@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { ACCENTS, BASES, MIXERS, type Item } from '../data/drinks.ts'
-import { estimate, pickRecipe, ratioText, recipes, type Locks } from './recipes.ts'
+import { estimate, pickRecipe, ratioText, recipes, REELS, RECIPES_BY_MODE, type Locks } from './recipes.ts'
 
 const byName = (list: Item[], name: string) => list.find((item) => item.name === name)!
 const recipe = (name: string) => recipes.find((r) => r.name === name)!
@@ -39,6 +39,30 @@ describe('pickRecipe', () => {
     const last = recipe('野格炸彈')
     const locks: Locks = [byName(BASES, '野格'), byName(MIXERS, '紅牛'), byName(ACCENTS, '冰塊')]
     expect(pickRecipe(locks, last)).toBe(last)
+  })
+})
+
+describe('惡魔模式', () => {
+  it('只會轉出惡魔酒譜', () => {
+    for (let i = 0; i < 200; i++) expect(pickRecipe([null, null, null], null, 'devil').tag).toBe('惡魔')
+  })
+
+  it('每一杯估算的酒精濃度都在 18% 以上', () => {
+    RECIPES_BY_MODE.devil.forEach((recipe) => expect(estimate(recipe).abv).toBeGreaterThanOrEqual(18))
+  })
+
+  it('基酒轉輪只有 35% 以上的烈酒', () => {
+    REELS.devil.items[0].forEach((base) => expect(base.abv).toBeGreaterThanOrEqual(35))
+  })
+
+  it('鎖定的組合沒有惡魔酒譜時，實驗組合也是兩份烈酒', () => {
+    const [bases, mixers, shots] = REELS.devil.items
+    const locks: Locks = [bases.find((b) => b.name === '琴酒')!, mixers.find((m) => m.name === '草莓牛奶')!, null]
+    const result = pickRecipe(locks, null, 'devil')
+    expect(result.tag).toBe('實驗')
+    expect(result.parts).toEqual([1, 2, 1])
+    expect(shots).toContain(result.items[2])
+    expect(estimate(result).abv).toBeGreaterThanOrEqual(18)
   })
 })
 

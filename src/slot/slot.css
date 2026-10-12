@@ -433,3 +433,149 @@
 .share-btn:active:not(:disabled) {
   transform: translateY(2px);
 }
+
+/* ---------- 惡魔開關 ---------- */
+
+.devil-switch {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  width: calc(100% - 8px);
+  margin: 16px 4px 4px;
+  padding: 8px 12px;
+  border: 0;
+  text-align: left;
+  color: var(--cream);
+  background: var(--green-dark);
+  box-shadow: var(--outline);
+  cursor: pointer;
+}
+
+.devil-switch:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.devil-switch__icon svg {
+  display: block;
+  width: 32px;
+  height: 32px;
+}
+
+.devil-switch:not(.is-on) .devil-switch__icon {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.devil-switch__label {
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.devil-switch__label small {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--muted);
+}
+
+/* 像素拉桿式開關：OFF 灰、ON 紅 */
+.devil-switch__track {
+  position: relative;
+  width: 48px;
+  height: 24px;
+  background: #4a4c66;
+  box-shadow: inset 0 0 0 4px var(--ink);
+}
+
+.devil-switch__knob {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 16px;
+  height: 16px;
+  background: var(--cream);
+  transition: transform 0.15s steps(3);
+}
+
+.devil-switch.is-on .devil-switch__track {
+  background: var(--red);
+}
+
+.devil-switch.is-on .devil-switch__knob {
+  transform: translateX(24px);
+}
+
+/* ---------- 惡魔模式外觀 ---------- */
+
+.cabinet.is-devil {
+  --lcd-bg: #2a0a0e;
+  --lcd-shadow: #160406;
+  --lcd-text: #ff6b6b;
+  --lcd-dim: #b84a4a;
+
+  background: #5c0a14;
+  box-shadow: var(--outline), inset -4px -4px 0 #3a050c, inset 4px 4px 0 #8f1424;
+}
+
+.cabinet.is-devil .marquee {
+  background: var(--ink);
+}
+
+.cabinet.is-devil .stripes {
+  background: linear-gradient(var(--red) 0 4px, var(--ink) 4px 8px, var(--red) 8px 12px);
+}
+
+.cabinet.is-devil .title {
+  color: var(--cream);
+}
+
+.cabinet.is-devil .lights {
+  background: repeating-linear-gradient(
+    90deg,
+    var(--red) 0 8px,
+    transparent 8px 16px,
+    var(--purple) 16px 24px,
+    transparent 24px 32px
+  );
+  animation-duration: 0.4s;
+}
+
+.cabinet.is-devil .reel__label {
+  color: #ffb3b3;
+}
+
+.cabinet.is-devil .screen__main {
+  text-shadow: 0 0 6px rgb(255 107 107 / 50%);
+}
+
+.cabinet.is-devil .spin-btn {
+  text-shadow: 2px 2px 0 var(--red-dark);
+  background: var(--red);
+  box-shadow: var(--outline), inset -4px -6px 0 var(--red-dark), inset 4px 4px 0 var(--red-light);
+}
+
+.cabinet.is-devil .lever__base,
+.cabinet.is-devil .devil-switch {
+  background: #3a050c;
+}
+
+.tag[data-tag='惡魔'] {
+  color: var(--red);
+  background: var(--ink);
+}
+
+.card.is-devil {
+  box-shadow: var(--outline), inset 0 0 0 4px var(--red), inset -8px -8px 0 var(--cream-dark);
+}
+
+.card__rows .card__warning-label,
+.card__rows .card__warning {
+  color: var(--red);
+}
+
+.card__note--devil {
+  color: var(--red-dark);
+}

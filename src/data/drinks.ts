@@ -19,17 +19,19 @@ export interface Item {
   howTo?: string
 }
 
-export type RecipeTag = '人氣' | '經典' | '創意' | '實驗'
+export type RecipeTag = '人氣' | '經典' | '創意' | '惡魔' | '實驗'
 
 export interface RecipeData {
   name: string
-  // 人氣＝網路上超商調酒文章常見的組合、經典＝經典調酒、創意＝自己搭的
+  // 人氣＝網路上超商調酒文章常見的組合、經典＝經典調酒、創意＝自己搭的、惡魔＝惡魔模式的高濃度組合
   tag: Exclude<RecipeTag, '實驗'>
   // 依序是基酒、材料一、材料二的品名
   items: [string, string, string]
   // 比例（材料二是 solid 時只寫前兩個）
   parts: number[]
   taste: string
+  // 為什麼容易醉（惡魔模式顯示在卡片上提醒）
+  warning?: string
 }
 
 // 基酒
@@ -98,4 +100,40 @@ export const RECIPES: RecipeData[] = [
   { name: '燒酒棒棒冰', tag: '人氣', items: ['燒酒', '氣泡水', '檸檬棒棒冰'], parts: [1, 1], taste: '冰棒邊融邊喝，檸檬酸甜加上氣泡，冰涼爽口' },
   { name: '梅酒蘇打', tag: '人氣', items: ['梅酒', '氣泡水', '冰塊'], parts: [1, 2], taste: '梅子酸甜被氣泡打開，清爽解膩，酒精感很輕' },
   { name: '梅子綠茶', tag: '人氣', items: ['梅酒', '無糖綠茶', '冰塊'], parts: [1, 1], taste: '茶的回甘配梅子酸甜，清爽不膩，像加了酒的梅子綠' },
+]
+
+/* ---------- 惡魔模式：都是高濃度組合 ---------- */
+
+// 基酒只留 35% 以上的烈酒
+export const DEVIL_MIN_ABV = 35
+
+// 惡魔模式的材料一多了啤酒（深水炸彈用）
+export const BEER: Item = { name: '啤酒', abv: 4.5, sweet: 0, fizz: 3, flavor: '啤酒的麥香', sprite: 'can', colors: { a: '#2f8f4e', b: '#f4f4f4', c: '#c0c6cc', e: '#d62828' } }
+
+// 第三個轉輪改成「加烈」：再加一份烈酒
+export const DEVIL_SHOTS: Item[] = [
+  { name: '伏特加 shot', abv: 40, sweet: 0, flavor: '一份伏特加', sprite: 'shot', colors: { a: '#dfe9f2', b: '#c0c6cc', c: '#ffffff' } },
+  { name: '琴酒 shot', abv: 40, sweet: 0, flavor: '一份琴酒', sprite: 'shot', colors: { a: '#cfe8d8', b: '#c0c6cc', c: '#ffffff' } },
+  { name: '威士忌 shot', abv: 40, sweet: 0, flavor: '一份威士忌', sprite: 'shot', colors: { a: '#c47a1e', b: '#c0c6cc', c: '#ffffff' } },
+  { name: '高粱 shot', abv: 58, sweet: 0, flavor: '一份高粱', sprite: 'shot', colors: { a: '#f4f1e8', b: '#c0c6cc', c: '#ffffff' } },
+  { name: '野格 shot', abv: 35, sweet: 2, flavor: '一份野格', sprite: 'shot', colors: { a: '#5a2e0e', b: '#c0c6cc', c: '#ffffff' } },
+]
+
+// 參考網路上「後勁強、容易醉」的調酒：長島冰茶、野格炸彈、深水炸彈、氣泡烈酒
+// warning 寫容易醉的原因：氣泡加速吸收、甜味和果汁蓋掉酒味、能量飲料讓人感覺不到醉
+export const DEVIL_RECIPES: RecipeData[] = [
+  { name: '惡魔炸彈', tag: '惡魔', items: ['野格', '紅牛', '伏特加 shot'], parts: [1, 2, 1], taste: '野格炸彈再補一份伏特加，甜甜的能量飲料味，後勁像被車撞', warning: '能量飲料會讓人感覺不到醉，很容易一杯接一杯' },
+  { name: '超商長島冰茶', tag: '惡魔', items: ['伏特加', '可樂', '琴酒 shot'], parts: [1, 2, 1], taste: '看起來像紅茶、喝起來像可樂，其實是兩種烈酒', warning: '外表無害又酸甜順口，最容易不知不覺喝多' },
+  { name: '深水炸彈', tag: '惡魔', items: ['威士忌', '啤酒', '威士忌 shot'], parts: [1, 3, 1], taste: 'shot 杯丟進啤酒裡一口乾，麥香和酒精一起衝上來', warning: '烈酒混啤酒加上氣泡，吸收快、容易吐' },
+  { name: '高粱炸彈', tag: '惡魔', items: ['高粱', '啤酒', '高粱 shot'], parts: [1, 3, 1], taste: '台式深水炸彈，高粱香在啤酒裡炸開，喝完整個人發熱', warning: '烈酒混啤酒加上氣泡，吸收快、容易吐' },
+  { name: '雙倍高粱葡萄', tag: '惡魔', items: ['高粱', '冰結葡萄', '高粱 shot'], parts: [1, 3, 1], taste: '葡萄沙瓦的外表，裡面兩份高粱，一口就知道今晚完了', warning: '甜味和氣泡蓋掉高粱的嗆，喝起來比實際淡很多' },
+  { name: '威士忌雙響砲', tag: '惡魔', items: ['威士忌', '氣泡水', '威士忌 shot'], parts: [1, 2, 1], taste: '濃到不行的嗨棒，麥香很重，氣泡只是裝飾', warning: '氣泡會讓酒精吸收得更快' },
+  { name: '琴酒地獄', tag: '惡魔', items: ['琴酒', '雪碧', '伏特加 shot'], parts: [1, 2, 1], taste: '琴雪通的強化版，清爽的外表下藏著兩倍烈酒', warning: '汽水的甜和氣泡會讓酒精更快上頭' },
+  { name: '高粱紅牛', tag: '惡魔', items: ['高粱', '紅牛', '野格 shot'], parts: [1, 2, 1], taste: '高粱遇上野格跟紅牛，派對核彈，喝完會很晚睡', warning: '能量飲料會讓人感覺不到醉，心跳也會變快' },
+  { name: '黑色星期五', tag: '惡魔', items: ['野格', '可樂', '威士忌 shot'], parts: [1, 2, 1], taste: '藥草味加焦糖甜，越喝越順，小心斷片', warning: '甜味蓋掉酒味，喝起來像飲料' },
+  { name: '雙倍檸檬炸彈', tag: '惡魔', items: ['伏特加', '冰結檸檬', '伏特加 shot'], parts: [1, 3, 1], taste: '冰結檸檬再加兩份伏特加，酸爽到忘記自己在喝酒', warning: '本身就有酒精的沙瓦再加烈酒，比看起來烈' },
+  { name: '沙士深水炸彈', tag: '惡魔', items: ['威士忌', '黑松沙士', '野格 shot'], parts: [1, 2, 1], taste: 'shot 杯丟進沙士一口乾，兩種草本味一起炸開', warning: '一口乾的喝法，酒精一次進去太多' },
+  { name: '惡魔綠茶', tag: '惡魔', items: ['高粱', '無糖綠茶', '琴酒 shot'], parts: [1, 3, 1], taste: 'KTV 綠茶的惡魔版，茶香只剩一點點，高粱香直衝腦門', warning: '不甜不嗆很好入口，容易喝太快' },
+  { name: '螺絲起子 Pro', tag: '惡魔', items: ['伏特加', '柳橙汁', '琴酒 shot'], parts: [1, 2, 1], taste: '柳橙還是酸甜，但酒精已經接管', warning: '果汁的酸甜會蓋掉酒味' },
+  { name: '蔓越莓魔王', tag: '惡魔', items: ['伏特加', '蔓越莓汁', '高粱 shot'], parts: [1, 2, 1], taste: '莓果酸甜壓不住高粱，顏色很美、後勁很兇', warning: '果汁的酸甜會蓋掉酒味，後勁晚一點才來' },
 ]
