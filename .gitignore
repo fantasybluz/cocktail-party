@@ -1,4 +1,9 @@
-.DS_Store
-.vscode/
-.idea/
+node_modules
+dist
+*.local
 *.log
+
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea

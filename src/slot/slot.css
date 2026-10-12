@@ -1,0 +1,435 @@
+/* ---------- 機台 ---------- */
+
+.cabinet {
+  margin: 4px;
+  padding: 12px 12px 16px;
+  background: var(--green);
+  box-shadow: var(--outline), inset -4px -4px 0 var(--green-dark), inset 4px 4px 0 var(--green-light);
+}
+
+.marquee {
+  margin: 4px 4px 16px;
+  padding-bottom: 8px;
+  background: var(--cream);
+  box-shadow: var(--outline);
+  text-align: center;
+}
+
+/* 招牌的橘紅綠三條色帶 */
+.stripes {
+  height: 12px;
+  background: linear-gradient(var(--orange) 0 4px, var(--red) 4px 8px, var(--green) 8px 12px);
+}
+
+.title {
+  margin: 4px 0 0;
+  font-size: 24px;
+  font-weight: normal;
+  line-height: 32px;
+  color: var(--ink);
+}
+
+.title__brand {
+  color: var(--red);
+}
+
+/* 跑馬燈：黃紅燈泡輪流亮 */
+.lights {
+  height: 8px;
+  margin: 8px 12px 0;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--yellow) 0 8px,
+    transparent 8px 16px,
+    var(--red) 16px 24px,
+    transparent 24px 32px
+  );
+  animation: chase 0.8s steps(4) infinite;
+}
+
+.lights--bottom {
+  margin-top: 4px;
+  animation-direction: reverse;
+}
+
+.cabinet.is-win .lights {
+  animation-duration: 0.2s;
+}
+
+@keyframes chase {
+  to {
+    background-position: 32px 0;
+  }
+}
+
+/* ---------- 轉輪 ---------- */
+
+.reel-area {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 36px;
+  gap: 4px;
+  align-items: end;
+}
+
+.reels {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.reel {
+  min-width: 0;
+  text-align: center;
+}
+
+.reel__label {
+  display: block;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--cream);
+}
+
+.reel__window {
+  position: relative;
+  display: block;
+  width: calc(100% - 8px);
+  height: calc(var(--cell) + var(--peek) * 2);
+  margin: 8px 4px 4px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  color: var(--ink);
+  background: var(--cream);
+  box-shadow: var(--outline);
+  cursor: pointer;
+}
+
+/* 上下露出的鄰格分兩段壓暗，做出轉輪的弧度 */
+.reel__window::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(
+    rgb(27 27 47 / 60%) 0 calc(var(--peek) / 2),
+    rgb(27 27 47 / 35%) calc(var(--peek) / 2) var(--peek),
+    transparent var(--peek) calc(100% - var(--peek)),
+    rgb(27 27 47 / 35%) calc(100% - var(--peek)) calc(100% - var(--peek) / 2),
+    rgb(27 27 47 / 60%) calc(100% - var(--peek) / 2)
+  );
+}
+
+.reel__strip {
+  display: block;
+  will-change: transform;
+}
+
+.cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  height: var(--cell);
+}
+
+.cell svg {
+  display: block;
+  width: var(--sprite);
+  height: var(--sprite);
+}
+
+.cell__name {
+  font-size: 12px;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+/* 停下來時彈一下 */
+.reel__strip.is-landed .cell {
+  animation: land 0.24s steps(3);
+}
+
+@keyframes land {
+  0% {
+    transform: translateY(-8px);
+  }
+
+  60% {
+    transform: translateY(4px);
+  }
+
+  100% {
+    transform: none;
+  }
+}
+
+.reel__lock {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  z-index: 2;
+  display: none;
+  padding: 0 4px;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--cream);
+  background: var(--red);
+  transform: translateX(-50%);
+}
+
+.reel.is-locked .reel__window {
+  background: #ffe3d6;
+}
+
+.reel.is-locked .reel__lock {
+  display: block;
+}
+
+.reel.is-locked .reel__label {
+  color: var(--yellow);
+}
+
+/* ---------- 拉桿 ---------- */
+
+.lever {
+  position: relative;
+  height: calc(var(--cell) + var(--peek) * 2 + 8px);
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.lever:disabled {
+  cursor: default;
+}
+
+.lever__slot {
+  position: absolute;
+  top: 16px;
+  bottom: 20px;
+  left: 15px;
+  width: 6px;
+  background: var(--ink);
+}
+
+.lever__arm {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 50%;
+  transition: transform 0.18s steps(3);
+}
+
+.lever.is-pulled .lever__arm {
+  transform: translateY(80%);
+}
+
+.lever__stick {
+  position: absolute;
+  top: 24px;
+  bottom: 0;
+  left: 15px;
+  width: 6px;
+  background: #c0c6cc;
+  box-shadow: inset -2px 0 0 #8a9099;
+}
+
+.lever__knob {
+  position: absolute;
+  top: 4px;
+  left: 8px;
+  width: 20px;
+  height: 20px;
+  background: var(--red);
+  box-shadow: var(--outline), inset 4px 4px 0 var(--red-light), inset -4px -4px 0 var(--red-dark);
+}
+
+.lever__base {
+  position: absolute;
+  right: 4px;
+  bottom: 4px;
+  left: 4px;
+  height: 16px;
+  background: var(--green-dark);
+  box-shadow: var(--outline);
+}
+
+/* ---------- SPIN 按鈕 ---------- */
+
+.spin-btn {
+  display: block;
+  width: calc(100% - 8px);
+  height: 60px;
+  margin: 4px;
+  padding: 0 0 0 8px;
+  border: 0;
+  font-size: 24px;
+  letter-spacing: 8px;
+  color: var(--cream);
+  text-shadow: 2px 2px 0 var(--orange-dark);
+  background: var(--orange);
+  box-shadow: var(--outline), inset -4px -6px 0 var(--orange-dark), inset 4px 4px 0 var(--orange-light);
+  cursor: pointer;
+}
+
+.spin-btn:disabled {
+  cursor: default;
+  filter: saturate(0.4) brightness(0.85);
+}
+
+.spin-btn:active:not(:disabled) {
+  box-shadow: var(--outline), inset 4px 6px 0 var(--orange-dark);
+  transform: translateY(2px);
+}
+
+/* ---------- 酒譜卡片 ---------- */
+
+.card {
+  margin: 28px 4px 4px;
+  padding: 16px;
+  color: var(--ink);
+  background: var(--cream);
+  box-shadow: var(--outline), inset -4px -4px 0 var(--cream-dark);
+}
+
+.card[hidden] {
+  display: none;
+}
+
+.card__eyebrow {
+  margin: 0;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-soft);
+}
+
+.card__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin: 4px 0 12px;
+}
+
+.card__name {
+  margin: 0;
+  font-size: 24px;
+  font-weight: normal;
+  line-height: 32px;
+}
+
+.tag {
+  flex: none;
+  padding: 0 6px;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--cream);
+  background: var(--green);
+  box-shadow: 0 -2px 0 0 var(--ink), 0 2px 0 0 var(--ink), -2px 0 0 0 var(--ink), 2px 0 0 0 var(--ink);
+}
+
+.tag[data-tag='人氣'] {
+  background: var(--red);
+}
+
+.tag[data-tag='經典'] {
+  background: var(--orange);
+}
+
+.tag[data-tag='實驗'] {
+  background: var(--purple);
+}
+
+.card__rows {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px 12px;
+  margin: 0;
+}
+
+.card__rows dt {
+  font-size: 12px;
+  line-height: 24px;
+  color: var(--text-soft);
+}
+
+.card__rows dd {
+  margin: 0;
+  line-height: 24px;
+}
+
+.meters {
+  display: grid;
+  gap: 8px;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 4px dashed var(--cream-dark);
+}
+
+.meter {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.meter__label {
+  color: var(--text-soft);
+}
+
+.meter__cells {
+  display: flex;
+  gap: 4px;
+}
+
+.meter__cells i {
+  width: 16px;
+  height: 12px;
+  background: var(--cream-dark);
+}
+
+.meter[data-kind='strength'] .on {
+  background: var(--red);
+}
+
+.meter[data-kind='sweet'] .on {
+  background: #ff7aa8;
+}
+
+.meter[data-kind='fizz'] .on {
+  background: #4cb8f0;
+}
+
+.card__note {
+  margin: 16px 0 0;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--text-soft);
+}
+
+.share-btn {
+  display: block;
+  width: calc(100% - 8px);
+  height: 48px;
+  margin: 16px 4px 4px;
+  border: 0;
+  color: #fff;
+  background: var(--line-green);
+  box-shadow: var(--outline), inset -4px -4px 0 var(--line-green-dark);
+  cursor: pointer;
+}
+
+.share-btn:disabled {
+  cursor: default;
+  filter: saturate(0.4);
+}
+
+.share-btn:active:not(:disabled) {
+  transform: translateY(2px);
+}

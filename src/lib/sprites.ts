@@ -1,0 +1,428 @@
+// 16x16 像素圖樣，每個字元是一格：
+// . 透明  k 外框  a 主色  w 亮面  d 暗面  b 標籤  e 標籤上的字  c 瓶蓋
+// w、d 沒指定時由主色自動算出
+export const SPRITES = {
+  bottle: [
+    '......kkkk......',
+    '......kcck......',
+    '......kcck......',
+    '......kkkk......',
+    '......kwak......',
+    '......kwak......',
+    '.....kwaaak.....',
+    '....kwaaaaak....',
+    '...kwaaaaaaak...',
+    '...kbbbbbbbbk...',
+    '...kbeeeeeebk...',
+    '...kbbbbbbbbk...',
+    '...kwaaaaaaak...',
+    '...kdaaaaaadk...',
+    '...kkkkkkkkkk...',
+    '................',
+  ],
+  squareBottle: [
+    '......kkkk......',
+    '......kcck......',
+    '......kcck......',
+    '......kkkk......',
+    '......kwak......',
+    '...kkkkwakkkk...',
+    '...kwaaaaaaak...',
+    '...kwaaaaaaak...',
+    '...kbbbbbbbbk...',
+    '...kbeeeeeebk...',
+    '...kbeeeeeebk...',
+    '...kbbbbbbbbk...',
+    '...kwaaaaaaak...',
+    '...kdaaaaaadk...',
+    '...kkkkkkkkkk...',
+    '................',
+  ],
+  cup: [
+    '................',
+    '................',
+    '................',
+    '...kkkkkkkkkk...',
+    '...kcccccccck...',
+    '...kkkkkkkkkk...',
+    '...kwaaaaaaak...',
+    '...kwaaaaaaak...',
+    '...kbbbbbbbbk...',
+    '...kbeeeeeebk...',
+    '...kbeeeeeebk...',
+    '...kbbbbbbbbk...',
+    '...kwaaaaaaak...',
+    '...kdaaaaaadk...',
+    '...kkkkkkkkkk...',
+    '................',
+  ],
+  can: [
+    '................',
+    '....kkkkkkkk....',
+    '...kcccccccck...',
+    '...kkkkkkkkkk...',
+    '...kwaaaaaaak...',
+    '...kwaaaaaaak...',
+    '...kwbbbbbbbk...',
+    '...kwbeeeeebk...',
+    '...kwbbbbbbbk...',
+    '...kwaaaaaaak...',
+    '...kwaaaaaaak...',
+    '...kwaaaaaaak...',
+    '...kdaaaaaadk...',
+    '...kkkkkkkkkk...',
+    '....kcccccck....',
+    '.....kkkkkk.....',
+  ],
+  slimCan: [
+    '................',
+    '.....kkkkkk.....',
+    '.....kcccck.....',
+    '.....kkkkkk.....',
+    '.....kwaaak.....',
+    '.....kwaaak.....',
+    '.....kbbbbk.....',
+    '.....kbeebk.....',
+    '.....kbeebk.....',
+    '.....kbbbbk.....',
+    '.....kwaaak.....',
+    '.....kwaaak.....',
+    '.....kdaadk.....',
+    '.....kkkkkk.....',
+    '......kcck......',
+    '......kkkk......',
+  ],
+  carton: [
+    '................',
+    '.......kk.......',
+    '......kcck......',
+    '.....kcccck.....',
+    '....kcccccck....',
+    '...kkkkkkkkkk...',
+    '...kwaaaaaaak...',
+    '...kwaaaaaaak...',
+    '...kwbbbbbbbk...',
+    '...kwbeeeeebk...',
+    '...kwbeeeeebk...',
+    '...kwbbbbbbbk...',
+    '...kwaaaaaaak...',
+    '...kdaaaaaadk...',
+    '...kkkkkkkkkk...',
+    '................',
+  ],
+  smallBottle: [
+    '................',
+    '................',
+    '......kkkk......',
+    '......kcck......',
+    '......kkkk......',
+    '.....kwaaak.....',
+    '......kwak......',
+    '.....kwaaak.....',
+    '....kbbbbbbk....',
+    '....kbeeeebk....',
+    '....kbeeeebk....',
+    '....kbbbbbbk....',
+    '....kwaaaaak....',
+    '....kdaaaadk....',
+    '....kkkkkkkk....',
+    '................',
+  ],
+  pet: [
+    '................',
+    '......kkkk......',
+    '......kcck......',
+    '......kkkk......',
+    '.....kwaaak.....',
+    '....kwaaaaak....',
+    '....kwaaaaak....',
+    '....kbbbbbbk....',
+    '....kbeeeebk....',
+    '....kbeeeebk....',
+    '....kbbbbbbk....',
+    '....kwaaaaak....',
+    '....kwaaaaak....',
+    '....kdaaaadk....',
+    '....kkkkkkkk....',
+    '................',
+  ],
+  icePop: [
+    '.......kk.......',
+    '......kcck......',
+    '.......kk.......',
+    '.....kkkkkk.....',
+    '.....kwaaak.....',
+    '.....kwawak.....',
+    '.....kwaaak.....',
+    '.....kwaaak.....',
+    '.....kwaawk.....',
+    '.....kwaaak.....',
+    '.....kwaaak.....',
+    '.....kwwaak.....',
+    '.....kdaadk.....',
+    '.....kkkkkk.....',
+    '.......kk.......',
+    '......kcck......',
+  ],
+  iceCream: [
+    '................',
+    '................',
+    '.....kkkkkk.....',
+    '....kwwaaaak....',
+    '...kwaaaaaaak...',
+    '...kaaaaaaaak...',
+    '..kkkkkkkkkkkk..',
+    '..kbbbbbbbbbbk..',
+    '...kbbbbbbbbk...',
+    '...kbeeeeeebk...',
+    '...kbbbbbbbbk...',
+    '....kbbbbbbk....',
+    '....kbbbbbbk....',
+    '....kkkkkkkk....',
+    '................',
+    '................',
+  ],
+  iceCup: [
+    '................',
+    '................',
+    '..kkkkkkkkkkkk..',
+    '..kaaaaaaaaaak..',
+    '..kabbbaabbbak..',
+    '..kabwbaabwbak..',
+    '..kabbbaabbbak..',
+    '...kaaabbbaak...',
+    '...kaaabwbaak...',
+    '...kaaabbbaak...',
+    '...kaaaaaaaak...',
+    '....kaaaaaak....',
+    '....kaaaaaak....',
+    '....kkkkkkkk....',
+    '................',
+    '................',
+  ],
+
+  // 以下是喝酒遊戲的圖示
+  wheel: [
+    '......kkkk......',
+    '.......kk.......',
+    '.....kkkkkk.....',
+    '...kkaaabbbkk...',
+    '..kaaaaabbbbbk..',
+    '..kaaaaabbbbbk..',
+    '..kaaaaabbbbbk..',
+    '..kaaaakkbbbbk..',
+    '..keeeekkcccck..',
+    '..keeeeeccccck..',
+    '..keeeeeccccck..',
+    '..keeeeeccccck..',
+    '...kkeeecccck...',
+    '.....kkkkkk.....',
+    '................',
+    '................',
+  ],
+  bomb: [
+    '............b...',
+    '..........b.bb..',
+    '...........bb...',
+    '..........c.....',
+    '.........c......',
+    '.....kkkkkk.....',
+    '....kwwaaaak....',
+    '...kwwaaaaaak...',
+    '...kwaaaaaaak...',
+    '...kaaaaaaaak...',
+    '...kaaaaaaaak...',
+    '...kaaaaaaadk...',
+    '....kaaaaadk....',
+    '.....kkkkkk.....',
+    '................',
+    '................',
+  ],
+  chest: [
+    '................',
+    '................',
+    '...kkkkkkkkkk...',
+    '..kaaaaaaaaaak..',
+    '..kaaaaaaaaaak..',
+    '..kbbbbbbbbbbk..',
+    '..kkkkkcckkkkk..',
+    '..kaaakcckaaak..',
+    '..kaaakkkkaaak..',
+    '..kaaaaaaaaaak..',
+    '..kbbbbbbbbbbk..',
+    '..kaaaaaaaaaak..',
+    '..kddddddddddk..',
+    '..kkkkkkkkkkkk..',
+    '................',
+    '................',
+  ],
+  phone: [
+    '................',
+    '....kkkkkkkk....',
+    '....kaaaaaak....',
+    '....kbbbbbbk....',
+    '....kbbeebbk....',
+    '....kbbeebbk....',
+    '....kbbeebbk....',
+    '....kbbbbbbk....',
+    '....kbbeebbk....',
+    '....kbbbbbbk....',
+    '....kbbbbbbk....',
+    '....kaaaaaak....',
+    '....kaakkaak....',
+    '....kaaaaaak....',
+    '....kkkkkkkk....',
+    '................',
+  ],
+  crown: [
+    '................',
+    '................',
+    '..k....kk....k..',
+    '..kk..kaak..kk..',
+    '..kak.kaak.kak..',
+    '..kaakaaaakaak..',
+    '..kaaaaaaaaaak..',
+    '..kaaaaaaaaaak..',
+    '..kabaabbaabak..',
+    '..kaaaaaaaaaak..',
+    '..kddddddddddk..',
+    '..kkkkkkkkkkkk..',
+    '................',
+    '................',
+    '................',
+    '................',
+  ],
+  bubble: [
+    '................',
+    '...kkkkkkkkkk...',
+    '..kaaaaaaaaaak..',
+    '..kaaaeeeeaaak..',
+    '..kaaeaaaaeaak..',
+    '..kaaaaaaaeaak..',
+    '..kaaaaaaeaaak..',
+    '..kaaaaaeaaaak..',
+    '..kaaaaaeaaaak..',
+    '..kaaaaaaaaaak..',
+    '..kaaaaaeaaaak..',
+    '..kaaaaaaaaaak..',
+    '...kkakkkkkkk...',
+    '....kak.........',
+    '....kk..........',
+    '................',
+  ],
+  martini: [
+    '................',
+    '................',
+    '..kkkkkkkkkkkk..',
+    '..kbbbbbbbbbbk..',
+    '...kbbbbbebbk...',
+    '....kbbbbbbk....',
+    '.....kbbbbk.....',
+    '......kbbk......',
+    '.......kk.......',
+    '.......kk.......',
+    '.......kk.......',
+    '.......kk.......',
+    '.....kkkkkk.....',
+    '................',
+    '................',
+    '................',
+  ],
+  spy: [
+    '................',
+    '................',
+    '.....kkkkkk.....',
+    '....kaaaaaak....',
+    '....kaaaaaak....',
+    '....kbbbbbbk....',
+    '.kkkkkkkkkkkkkk.',
+    '...kcccccccck...',
+    '...keeekkeeek...',
+    '...keeekkeeek...',
+    '...kcccccccck...',
+    '...kcckkkkcck...',
+    '....kcccccck....',
+    '.....kkkkkk.....',
+    '................',
+    '................',
+  ],
+  explosion: [
+    '................',
+    '......b..b......',
+    '..b...bbbb...b..',
+    '...bb.baab.bb...',
+    '....bbaaaabb....',
+    '.bbbbaaccaabbbb.',
+    '..bbaccccccabb..',
+    '...baccwwccab...',
+    '...baccwwccab...',
+    '..bbaccccccabb..',
+    '.bbbbaaccaabbbb.',
+    '....bbaaaabb....',
+    '...bb.baab.bb...',
+    '..b...bbbb...b..',
+    '......b..b......',
+    '................',
+  ],
+} satisfies Record<string, string[]>
+
+export type SpriteName = keyof typeof SPRITES
+export type ColorKey = 'a' | 'b' | 'c' | 'd' | 'e' | 'w'
+export type SpriteColors = { a: string } & Partial<Record<ColorKey, string>>
+
+export interface PixelRect {
+  x: number
+  y: number
+  width: number
+  fill: string
+}
+
+const OUTLINE_COLOR = '#1b1b2f'
+
+// 把 hex 顏色往 target 混合 amount（0~1）
+export function mixColor(hex: string, target: string, amount: number): string {
+  const from = parseInt(hex.slice(1), 16)
+  const to = parseInt(target.slice(1), 16)
+  return (
+    '#' +
+    [16, 8, 0]
+      .map((shift) => {
+        const f = (from >> shift) & 255
+        const t = (to >> shift) & 255
+        return Math.round(f + (t - f) * amount)
+          .toString(16)
+          .padStart(2, '0')
+      })
+      .join('')
+  )
+}
+
+const cache = new Map<string, PixelRect[]>()
+
+// 把圖樣轉成一列一列的色塊，同一列連續同色的格子合併成一個
+export function spriteRects(name: SpriteName, colors: SpriteColors): PixelRect[] {
+  const key = name + JSON.stringify(colors)
+  const cached = cache.get(key)
+  if (cached) return cached
+
+  const palette: Record<string, string> = {
+    k: OUTLINE_COLOR,
+    w: mixColor(colors.a, '#ffffff', 0.55),
+    d: mixColor(colors.a, '#000000', 0.3),
+    ...colors,
+  }
+
+  const rects: PixelRect[] = []
+  SPRITES[name].forEach((row, y) => {
+    let x = 0
+    while (x < row.length) {
+      const color = row[x]
+      let end = x + 1
+      while (end < row.length && row[end] === color) end++
+      if (color !== '.') rects.push({ x, y, width: end - x, fill: palette[color] })
+      x = end
+    }
+  })
+  cache.set(key, rects)
+  return rects
+}

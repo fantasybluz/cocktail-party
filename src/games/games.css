@@ -1,0 +1,637 @@
+/* ---------- 遊戲列表 ---------- */
+
+.page-head {
+  margin: 8px 4px 16px;
+}
+
+.page-title,
+.game-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: normal;
+  line-height: 32px;
+}
+
+.page-sub {
+  margin: 4px 0 0;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--muted);
+}
+
+.game-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.game-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin: 4px;
+  padding: 12px 8px;
+  text-align: center;
+  text-decoration: none;
+  color: var(--ink);
+  background: var(--cream);
+  box-shadow: var(--outline), inset -4px -4px 0 var(--cream-dark);
+}
+
+.game-card:active {
+  transform: translateY(2px);
+}
+
+.game-card svg {
+  display: block;
+  width: 64px;
+  height: 64px;
+}
+
+.game-card__name {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.game-card__desc {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-soft);
+}
+
+/* ---------- 遊戲頁共用 ---------- */
+
+.game-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 0 12px;
+}
+
+.back-btn {
+  flex: none;
+  margin: 4px;
+  padding: 4px 10px;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--ink);
+  text-decoration: none;
+  background: var(--cream);
+  box-shadow: var(--outline), inset -4px -4px 0 var(--cream-dark);
+}
+
+.game-rule {
+  margin: 0 4px 16px;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--muted);
+}
+
+.game-status {
+  min-height: 20px;
+  margin: 8px 4px;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: center;
+}
+
+.game-result .screen__main,
+.game-result .game-status {
+  white-space: pre-line;
+}
+
+.result-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.settings {
+  display: grid;
+  gap: 4px;
+  margin: 0 4px 12px;
+}
+
+.stepper {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  gap: 4px;
+}
+
+.stepper__value {
+  min-width: 48px;
+  font-size: 24px;
+  line-height: 32px;
+  text-align: center;
+}
+
+.stepper .btn {
+  width: 44px;
+  min-height: 44px;
+  padding: 0;
+  font-size: 24px;
+}
+
+.segmented {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 4px 12px;
+}
+
+.segmented button {
+  min-height: 40px;
+  margin: 4px;
+  border: 0;
+  font-size: 16px;
+  color: var(--ink);
+  background: var(--cream);
+  box-shadow: var(--outline), inset -4px -4px 0 var(--cream-dark);
+  cursor: pointer;
+}
+
+.segmented button.is-active {
+  color: var(--cream);
+  background: var(--orange);
+  box-shadow: var(--outline), inset -4px -4px 0 var(--orange-dark);
+}
+
+/* ---------- 懲罰轉盤 ---------- */
+
+.ring {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.ring__cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  margin: 4px;
+  padding: 6px;
+  font-size: 16px;
+  line-height: 20px;
+  text-align: center;
+  word-break: break-all;
+  color: var(--ink);
+  background: var(--cream);
+  box-shadow: var(--outline), inset -4px -4px 0 var(--cream-dark);
+}
+
+.ring__cell.is-lit {
+  background: var(--yellow);
+  box-shadow: var(--outline), inset -4px -4px 0 #d9a800;
+}
+
+.ring__cell.is-win {
+  color: var(--cream);
+  background: var(--orange);
+  box-shadow: var(--outline), inset -4px -4px 0 var(--orange-dark);
+  animation: blink 0.3s steps(1) 6;
+}
+
+.ring__start {
+  grid-area: 2 / 2;
+  aspect-ratio: 1;
+  margin: 4px;
+  border: 0;
+  font-size: 24px;
+  color: var(--cream);
+  text-shadow: 2px 2px 0 var(--red-dark);
+  background: var(--red);
+  box-shadow: var(--outline), inset -4px -4px 0 var(--red-dark), inset 4px 4px 0 var(--red-light);
+  cursor: pointer;
+}
+
+.ring__start:disabled {
+  cursor: default;
+  filter: saturate(0.4) brightness(0.85);
+}
+
+.ring__start:active:not(:disabled) {
+  transform: translateY(2px);
+}
+
+.wheel-editor {
+  margin-top: 16px;
+}
+
+.wheel-editor__list {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+/* ---------- 數字炸彈 ---------- */
+
+.nb-range {
+  margin: 0;
+  font-size: 36px;
+  line-height: 48px;
+  text-shadow: 0 0 6px rgb(125 255 168 / 45%);
+}
+
+.nb-input {
+  min-height: 48px;
+  margin: 0 4px 12px;
+  padding: 8px;
+  font-size: 24px;
+  line-height: 32px;
+  text-align: center;
+  color: var(--ink);
+  background: #fff;
+  box-shadow: var(--outline);
+}
+
+.nb-input.is-placeholder {
+  color: var(--text-soft);
+}
+
+.nb-input.is-error {
+  color: var(--red);
+  animation: shake 0.3s steps(4);
+}
+
+.keypad {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.keypad .btn {
+  min-height: 56px;
+  font-size: 24px;
+}
+
+.keypad .btn[data-key='清除'] {
+  font-size: 16px;
+}
+
+/* ---------- 開箱炸彈 ---------- */
+
+.box-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.box {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  margin: 4px;
+  padding: 0;
+  border: 0;
+  color: var(--ink);
+  background: var(--cream);
+  box-shadow: var(--outline), inset -4px -4px 0 var(--cream-dark);
+  cursor: pointer;
+}
+
+.box svg {
+  display: block;
+  width: 48px;
+  height: 48px;
+}
+
+.box__num {
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.box__label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  color: var(--green-dark);
+}
+
+.box:disabled {
+  cursor: default;
+  opacity: 1;
+}
+
+.box.is-open {
+  background: var(--cream-dark);
+}
+
+.box.is-open:not(.is-bomb) svg {
+  opacity: 0.25;
+}
+
+.box.is-bomb {
+  background: var(--red);
+  box-shadow: var(--outline), inset -4px -4px 0 var(--red-dark);
+}
+
+.box.is-bomb .box__num {
+  color: var(--cream);
+}
+
+/* ---------- 傳手機炸彈 ---------- */
+
+.hp-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 4px 4px 16px;
+  padding: 16px;
+  text-align: center;
+  background-color: var(--lcd-bg);
+  background-image: repeating-linear-gradient(transparent 0 3px, rgb(0 0 0 / 25%) 3px 4px);
+  box-shadow: var(--outline), inset 4px 4px 0 var(--lcd-shadow);
+}
+
+/* stylelint-disable-next-line no-descending-specificity -- 跟開箱炸彈的 svg 是不同元素 */
+.hp-bomb svg {
+  display: block;
+  width: 128px;
+  height: 128px;
+}
+
+.hp-stage.is-running .hp-bomb {
+  animation: pulse var(--pulse, 1s) steps(2) infinite;
+}
+
+@keyframes pulse {
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.hp-label {
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--lcd-dim);
+}
+
+.hp-topic {
+  margin: 0;
+  font-size: 24px;
+  line-height: 32px;
+  color: var(--lcd-text);
+}
+
+/* ---------- 國王杯 ---------- */
+
+.playing-card {
+  position: relative;
+  display: block;
+  width: 160px;
+  height: 224px;
+  margin: 8px auto 20px;
+  padding: 0;
+  border: 0;
+  color: var(--ink);
+  background: #fff;
+  box-shadow: var(--outline), inset -4px -4px 0 var(--cream-dark);
+  cursor: pointer;
+}
+
+.playing-card.is-red {
+  color: var(--red);
+}
+
+/* 牌背：紅色棋盤格 */
+.playing-card.is-back {
+  background: conic-gradient(var(--red-dark) 25%, var(--red) 0 50%, var(--red-dark) 0 75%, var(--red) 0) 0 0 / 16px 16px;
+}
+
+.playing-card.is-back > * {
+  visibility: hidden;
+}
+
+.playing-card.is-back::after {
+  content: '抽牌';
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 24px;
+  color: var(--cream);
+  text-shadow: 2px 2px 0 var(--ink);
+}
+
+.playing-card.is-flipping {
+  animation: flip 0.3s steps(4);
+}
+
+@keyframes flip {
+  50% {
+    transform: scaleX(0);
+  }
+}
+
+.playing-card__corner {
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  font-size: 24px;
+  line-height: 28px;
+  text-align: center;
+  white-space: pre;
+}
+
+.playing-card__corner--bottom {
+  inset: auto 12px 8px auto;
+  transform: rotate(180deg);
+}
+
+.playing-card__suit {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  font-size: 72px;
+  line-height: 1;
+}
+
+.kc-rule {
+  text-align: center;
+}
+
+.kc-rule__title {
+  margin: 0;
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.kc-rule__desc {
+  margin: 8px 0 0;
+  line-height: 24px;
+}
+
+.rules-list {
+  margin-top: 20px;
+}
+
+.rules-list summary {
+  cursor: pointer;
+}
+
+.rules-list dl {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 8px 12px;
+  margin: 12px 0 0;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.rules-list dt {
+  color: var(--red);
+}
+
+.rules-list dd {
+  margin: 0;
+}
+
+/* ---------- 題目卡 ---------- */
+
+.q-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+  min-height: 220px;
+  text-align: center;
+}
+
+.q-card p {
+  margin: 0;
+}
+
+.q-card__type {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-soft);
+}
+
+.q-card__type.is-truth {
+  color: var(--blue);
+}
+
+.q-card__type.is-dare {
+  color: var(--red);
+}
+
+.q-card__text {
+  font-size: 24px;
+  line-height: 36px;
+}
+
+.q-card__foot {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--red);
+}
+
+.q-card.is-new {
+  animation: pop 0.2s steps(2);
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.94);
+  }
+}
+
+/* ---------- 誰是臥底 ---------- */
+
+.spy-who {
+  margin: 8px 4px 16px;
+  font-size: 24px;
+  line-height: 32px;
+  text-align: center;
+}
+
+.spy-who strong {
+  font-weight: normal;
+  color: var(--yellow);
+}
+
+.spy-word {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: calc(100% - 8px);
+  min-height: 200px;
+  margin: 4px 4px 16px;
+  border: 0;
+  font-size: 16px;
+  color: var(--lcd-text);
+  background-color: var(--lcd-bg);
+  background-image: repeating-linear-gradient(transparent 0 3px, rgb(0 0 0 / 25%) 3px 4px);
+  box-shadow: var(--outline), inset 4px 4px 0 var(--lcd-shadow);
+  cursor: pointer;
+}
+
+.spy-word strong {
+  font-size: 48px;
+  font-weight: normal;
+  line-height: 60px;
+  text-shadow: 0 0 6px rgb(125 255 168 / 45%);
+}
+
+.spy-word small {
+  font-size: 12px;
+  color: var(--lcd-dim);
+}
+
+.player-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1;
+  margin: 4px;
+  padding: 0;
+  border: 0;
+  font-size: 16px;
+  line-height: 20px;
+  color: var(--ink);
+  background: var(--cream);
+  box-shadow: var(--outline), inset -4px -4px 0 var(--cream-dark);
+  cursor: pointer;
+}
+
+.player small {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.player.is-selected {
+  background: var(--yellow);
+  box-shadow: var(--outline), inset -4px -4px 0 #d9a800;
+}
+
+.player:disabled {
+  cursor: default;
+  opacity: 0.5;
+}
+
+.player.is-spy:disabled {
+  color: var(--cream);
+  background: var(--red);
+  box-shadow: var(--outline), inset -4px -4px 0 var(--red-dark);
+  opacity: 1;
+}
