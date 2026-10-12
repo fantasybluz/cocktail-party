@@ -1,4 +1,5 @@
 import type { Ref } from 'react'
+import { useParty } from '../party.ts'
 import { estimate, fizzLabel, ratioText, sweetLabel, type Recipe } from './recipes.ts'
 
 interface Props {
@@ -25,6 +26,7 @@ function Meter({ kind, label, level, value }: { kind: string; label: string; lev
 }
 
 export function RecipeCard({ ref, recipe, loser, devil, shareDisabled, onShare }: Props) {
+  const { recordDrink } = useParty()
   const accent = recipe.items[2]
   const result = estimate(recipe)
 
@@ -79,6 +81,11 @@ export function RecipeCard({ ref, recipe, loser, devil, shareDisabled, onShare }
         <p className="card__note">1 份 ≈ 一瓶 50ml 迷你酒，酒精濃度沒算冰塊融化，僅供參考</p>
       )}
 
+      {loser && (
+        <button className="btn" type="button" onClick={recordDrink}>
+          記一杯到記分板
+        </button>
+      )}
       <button className="share-btn" id="share" type="button" disabled={shareDisabled} onClick={onShare}>
         分享到 LINE
       </button>

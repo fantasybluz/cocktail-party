@@ -1,25 +1,10 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { GameResult } from '../components/GameResult.tsx'
+import { PlayingCard } from '../components/PlayingCard.tsx'
 import { KINGS_CUP_RULES } from '../data/games.ts'
-import { shuffle } from '../lib/random.ts'
 import { sound, vibrate } from '../lib/sound.ts'
+import { newDeck, RANKS, type Card } from './cards.ts'
 import { GamePage } from './GamePage.tsx'
-
-const SUITS = [
-  { suit: '♠', red: false },
-  { suit: '♥', red: true },
-  { suit: '♦', red: true },
-  { suit: '♣', red: false },
-]
-const RANKS = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
-
-interface Card {
-  rank: string
-  suit: string
-  red: boolean
-}
-
-const newDeck = (): Card[] => shuffle(SUITS.flatMap(({ suit, red }) => RANKS.map((rank) => ({ rank, suit, red }))))
 
 export function KingsCup() {
   const [deck, setDeck] = useState(newDeck)
@@ -85,22 +70,13 @@ export function KingsCup() {
     }
   }
 
-  const corner = face ? `${face.rank}\n${face.suit}` : ''
-  const cardClasses = ['playing-card', !face && 'is-back', face?.red && 'is-red', flips > 0 && 'is-flipping']
-    .filter(Boolean)
-    .join(' ')
-
   return (
     <GamePage title="國王杯" rule="中間放一個空杯當國王杯。輪流抽牌，照牌上的規則做。">
       <p className="game-status" id="kc-status">
         剩 {deck.length} 張・國王杯 K {'■'.repeat(kings)}
         {'□'.repeat(4 - kings)}
       </p>
-      <button key={flips} className={cardClasses} id="kc-card" type="button" aria-label="抽一張牌" onClick={draw}>
-        <span className="playing-card__corner">{corner}</span>
-        <span className="playing-card__suit">{face?.suit}</span>
-        <span className="playing-card__corner playing-card__corner--bottom">{corner}</span>
-      </button>
+      <PlayingCard card={face} flipKey={flips} id="kc-card" label="抽一張牌" onClick={draw} />
       <div className="panel kc-rule" aria-live="polite">
         <p className="kc-rule__title" id="kc-title">
           {title}

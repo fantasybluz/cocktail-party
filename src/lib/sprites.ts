@@ -1,6 +1,46 @@
 // 16x16 像素圖樣，每個字元是一格：
 // . 透明  k 外框  a 主色  w 亮面  d 暗面  b 標籤  e 標籤上的字  c 瓶蓋
 // w、d 沒指定時由主色自動算出
+// 骰子 1～6 點：白色圓角方塊，點用 e 色（1、4 點習慣用紅色，由元件決定顏色）
+// 點的位置用 3x3 格表示（列, 欄），0 上/左、1 中、2 下/右
+const PIPS: Record<number, [number, number][]> = {
+  1: [[1, 1]],
+  2: [[0, 0], [2, 2]],
+  3: [[0, 0], [1, 1], [2, 2]],
+  4: [[0, 0], [0, 2], [2, 0], [2, 2]],
+  5: [[0, 0], [0, 2], [1, 1], [2, 0], [2, 2]],
+  6: [[0, 0], [1, 0], [2, 0], [0, 2], [1, 2], [2, 2]],
+}
+
+function dieRows(value: number): string[] {
+  const rows = Array.from({ length: 16 }, () => Array.from({ length: 16 }, () => '.'))
+  for (let x = 2; x <= 13; x++) {
+    rows[1][x] = 'k'
+    rows[14][x] = 'k'
+  }
+  for (let y = 2; y <= 13; y++) {
+    rows[y][1] = 'k'
+    rows[y][14] = 'k'
+    for (let x = 2; x <= 13; x++) rows[y][x] = y === 13 ? 'd' : 'a'
+  }
+  // 每顆點 2x2，三個位置在內框的 4、7、10 格
+  for (const [row, col] of PIPS[value]) {
+    const top = 4 + row * 3
+    const left = 4 + col * 3
+    for (const [dy, dx] of [[0, 0], [0, 1], [1, 0], [1, 1]]) rows[top + dy][left + dx] = 'e'
+  }
+  return rows.map((row) => row.join(''))
+}
+
+const DICE = {
+  die1: dieRows(1),
+  die2: dieRows(2),
+  die3: dieRows(3),
+  die4: dieRows(4),
+  die5: dieRows(5),
+  die6: dieRows(6),
+}
+
 export const SPRITES = {
   bottle: [
     '......kkkk......',
@@ -402,6 +442,171 @@ export const SPRITES = {
     '................',
     '................',
   ],
+
+  // 以下是第二批遊戲、聚會工具的圖示
+  target: [
+    '................',
+    '.....kkkkkk.....',
+    '...kkaaaaaakk...',
+    '..kaaaaaaaaaak..',
+    '..kaabbbbbbaak..',
+    '.kaabbbbbbbbaak.',
+    '.kaabbccccbbaak.',
+    '.kaabbccccbbaak.',
+    '.kaabbccccbbaak.',
+    '.kaabbccccbbaak.',
+    '.kaabbbbbbbbaak.',
+    '..kaabbbbbbaak..',
+    '..kaaaaaaaaaak..',
+    '...kkaaaaaakk...',
+    '.....kkkkkk.....',
+    '................',
+  ],
+  finger: [
+    '......kk........',
+    '.....kaak.......',
+    '.....kaak.......',
+    '.....kaak.......',
+    '.....kaakkkk....',
+    '.....kaakaakkk..',
+    '..kk.kaakaakaak.',
+    '.kaakkaaaaaaaak.',
+    '.kaaakaaaaaaaak.',
+    '..kaaaaaaaaaaak.',
+    '...kaaaaaaaaak..',
+    '...kaaaaaaaaak..',
+    '....kaaaaaaak...',
+    '....kbbbbbbbk...',
+    '....kbbbbbbbk...',
+    '....kkkkkkkkk...',
+  ],
+  pencil: [
+    '................',
+    '......kkkk......',
+    '.....kbbbbk.....',
+    '.....kbbbbk.....',
+    '.....kkkkkk.....',
+    '.....kcccck.....',
+    '.....kkkkkk.....',
+    '.....kwaaak.....',
+    '.....kwaaak.....',
+    '.....kwaaak.....',
+    '.....kwaaak.....',
+    '.....kdaadk.....',
+    '......keek......',
+    '......keek......',
+    '.......kk.......',
+    '................',
+  ],
+  cardArrows: [
+    '................',
+    '...kkkkkkkkkk...',
+    '...kaaaaaaaak...',
+    '...kaaabbaaak...',
+    '...kaabbbbaak...',
+    '...kabbbbbbak...',
+    '...kaaabbaaak...',
+    '...kaaaaaaaak...',
+    '...kaaaaaaaak...',
+    '...kaaaeeaaak...',
+    '...kaeeeeeeak...',
+    '...kaaeeeeaak...',
+    '...kaaaeeaaak...',
+    '...kaaaaaaaak...',
+    '...kkkkkkkkkk...',
+    '................',
+  ],
+  board: [
+    '................',
+    '.kkkkkkkkkkkkkk.',
+    '.kaabbccaabbcck.',
+    '.kaabbccaabbcck.',
+    '.kcckkkkkkkkaak.',
+    '.kcck......kaak.',
+    '.kbbk..ee..kbbk.',
+    '.kbbk.eeee.kbbk.',
+    '.kaak..ee..kcck.',
+    '.kaak.eeee.kcck.',
+    '.kcck......kaak.',
+    '.kcckkkkkkkkaak.',
+    '.kbbaaccbbaacck.',
+    '.kbbaaccbbaacck.',
+    '.kkkkkkkkkkkkkk.',
+    '................',
+  ],
+  mask: [
+    '................',
+    '...kkkkkkkkkk...',
+    '..kaaaaaaaaaak..',
+    '..kaaaaaaaaaak..',
+    '..kakkkaakkkak..',
+    '..kaaaaaaaaaak..',
+    '..kaaaaaaaaaak..',
+    '..kaakaaaakaak..',
+    '...kaakkkkaak...',
+    '...kaaaaaaaak...',
+    '....kaaaaaak....',
+    '.....kkkkkk.....',
+    '................',
+    '................',
+    '................',
+    '................',
+  ],
+  heads: [
+    '................',
+    '....kkkkkkkk....',
+    '....kbbbbbbk....',
+    '....kbeebeek....',
+    '....kkkkkkkk....',
+    '...kkaaaaaakk...',
+    '..kaaaaaaaaaak..',
+    '..kaakkaakkaak..',
+    '..kaaaaaaaaaak..',
+    '..kaaakkkkaaak..',
+    '...kaaaaaaaak...',
+    '....kkkkkkkk....',
+    '................',
+    '................',
+    '................',
+    '................',
+  ],
+  mug: [
+    '................',
+    '..kkkkkkkk......',
+    '.kbbbbbbbbk.....',
+    '.kbbbbbbbbkkk...',
+    '.kaaaaaaaak.k...',
+    '.kawaaaaaak.k...',
+    '.kawaaaaaak.k...',
+    '.kawaaaaaak.k...',
+    '.kawaaaaaak.k...',
+    '.kaaaaaaaakkk...',
+    '.kaaaaaaaak.....',
+    '.kddddddddk.....',
+    '..kkkkkkkk......',
+    '................',
+    '................',
+    '................',
+  ],
+  people: [
+    '................',
+    '................',
+    '...kkkk..kkkk...',
+    '..kaaaakkbbbbk..',
+    '..kaaaakkbbbbk..',
+    '...kkkk..kkkk...',
+    '.kkkkkkkkkkkkkk.',
+    '.kaaaaakkbbbbbk.',
+    '.kaaaaakkbbbbbk.',
+    '.kaaaaakkbbbbbk.',
+    '.kaaaaakkbbbbbk.',
+    '.kkkkkkkkkkkkkk.',
+    '................',
+    '................',
+    '................',
+    '................',
+  ],
+  ...DICE,
 } satisfies Record<string, string[]>
 
 export type SpriteName = keyof typeof SPRITES

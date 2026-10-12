@@ -90,7 +90,9 @@ export function BoxBomb() {
               disabled={isOpen || round.exploded !== null}
               onClick={() => open(i)}
             >
-              <PixelSprite name={isBomb ? 'explosion' : 'chest'} colors={isBomb ? EXPLOSION_COLORS : CHEST_COLORS} />
+              <span className="box__sprite">
+                <PixelSprite name={isBomb ? 'explosion' : 'chest'} colors={isBomb ? EXPLOSION_COLORS : CHEST_COLORS} />
+              </span>
               <span className="box__num">{i + 1}</span>
               {isOpen && !isBomb && <span className="box__label">安全</span>}
             </button>

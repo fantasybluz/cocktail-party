@@ -1,4 +1,4 @@
-import { DARES, TRUTHS } from '../data/games.ts'
+import { DARES, DARES_ADULT, TRUTHS, TRUTHS_ADULT } from '../data/games.ts'
 import { makeBag } from '../lib/random.ts'
 import type { TruthDareType } from '../party.ts'
 
@@ -9,11 +9,14 @@ export interface TruthDareCard {
   id: number
 }
 
-const nextTruth = makeBag(TRUTHS)
-const nextDare = makeBag(DARES)
+// 一般／成人模式各一副，分開洗牌
+const BAGS = {
+  normal: { truth: makeBag(TRUTHS), dare: makeBag(DARES) },
+  adult: { truth: makeBag(TRUTHS_ADULT), dare: makeBag(DARES_ADULT) },
+}
 let drawCount = 0
 
-export function drawTruthDare(type: TruthDareType): TruthDareCard {
+export function drawTruthDare(type: TruthDareType, adult = false): TruthDareCard {
   drawCount += 1
-  return { type, text: type === 'truth' ? nextTruth() : nextDare(), id: drawCount }
+  return { type, text: BAGS[adult ? 'adult' : 'normal'][type](), id: drawCount }
 }

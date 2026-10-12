@@ -18,9 +18,14 @@ interface Props {
 
 // 遊戲結果：液晶螢幕＋按鈕
 export function GameResult({ tag, text, note, loser = false, actions = [], id }: Props) {
-  const { loserSpin } = useParty()
+  const { loserSpin, recordDrink } = useParty()
   const buttons: ResultAction[] = [
-    ...(loser ? [{ label: '輸家去轉拉霸機', variant: 'orange' as const, onClick: loserSpin }] : []),
+    ...(loser
+      ? [
+          { label: '輸家去轉拉霸機', variant: 'orange' as const, onClick: loserSpin },
+          { label: '記一杯到記分板', onClick: recordDrink },
+        ]
+      : []),
     ...actions,
   ]
 

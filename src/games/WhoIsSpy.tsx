@@ -4,6 +4,7 @@ import { Stepper } from '../components/Stepper.tsx'
 import { SPY_WORDS } from '../data/games.ts'
 import { makeBag, shuffle } from '../lib/random.ts'
 import { sound, vibrate } from '../lib/sound.ts'
+import { playerName, useParty } from '../party.ts'
 import { GamePage } from './GamePage.tsx'
 
 const nextPair = makeBag(SPY_WORDS)
@@ -22,8 +23,12 @@ interface Game {
 }
 
 export function WhoIsSpy() {
-  const [players, setPlayers] = useState(5)
-  const [spies, setSpies] = useState(1)
+  const { roster } = useParty()
+  // 沒手動調整前跟著記分板名單的人數
+  const [playersOverride, setPlayers] = useState<number | null>(null)
+  const players = playersOverride ?? (roster.length >= 3 ? Math.min(roster.length, 12) : 5)
+  const [spiesWanted, setSpies] = useState(1)
+  const spies = Math.min(spiesWanted, maxSpies(players))
   const [step, setStep] = useState<Step>('setup')
   const [game, setGame] = useState<Game | null>(null)
   const [turn, setTurn] = useState(0) // 發詞發到幾號
@@ -41,7 +46,7 @@ export function WhoIsSpy() {
 
   function changePlayers(value: number) {
     setPlayers(value)
-    setSpies(Math.min(spies, maxSpies(value)))
+    setSpies(Math.min(spiesWanted, maxSpies(value)))
   }
 
   function start() {
@@ -89,7 +94,7 @@ export function WhoIsSpy() {
     return (
       <GamePage title="誰是臥底">
         <p className="spy-who" id="spy-who">
-          請 <strong>{turn + 1} 號</strong> 拿手機
+          請 <strong>{playerName(roster, turn)}</strong> 拿手機
         </p>
         <button
           className="spy-word"
@@ -161,21 +166,21 @@ export function WhoIsSpy() {
       vibrate([100, 60, 100])
       return
     }
-    setMessage(`${selected + 1} 號是${wasSpy ? '臥底！' : '平民⋯'}還有 ${left} 個臥底，繼續下一輪`)
+    setMessage(`${playerName(roster, selected)} 是${wasSpy ? '臥底！' : '平民⋯'}還有 ${left} 個臥底，繼續下一輪`)
     if (wasSpy) sound.win()
     else sound.lose()
     vibrate(60)
   }
 
   const spyNumbers = game.isSpy
-    .map((isSpy, i) => (isSpy ? `${i + 1} 號` : null))
+    .map((isSpy, i) => (isSpy ? playerName(roster, i) : null))
     .filter(Boolean)
     .join('、')
 
   return (
     <GamePage title="誰是臥底">
       <p className="game-rule" id="spy-hint">
-        從 {game.first} 號開始，每人用一句話描述自己的詞（不能直接說出來）。說完一輪後投票，把票最多的人點出來淘汰。
+        從 {playerName(roster, game.first - 1)} 開始，每人用一句話描述自己的詞（不能直接說出來）。說完一輪後投票，把票最多的人點出來淘汰。
       </p>
       <p className="game-status" id="spy-status" aria-live="polite">
         {message || `還有 ${alive} 人，其中臥底 ${spiesLeft} 人`}
@@ -198,14 +203,15 @@ export function WhoIsSpy() {
                 sound.blip(true)
               }}
             >
-              {i + 1} 號{revealed && <small>{isSpy ? '臥底' : '平民'}</small>}
+              {playerName(roster, i)}
+              {revealed && <small>{isSpy ? '臥底' : '平民'}</small>}
             </button>
           )
         })}
       </div>
       {selected !== null && winner === null && (
         <button className="btn btn--red btn--big" id="spy-out" type="button" onClick={eliminate}>
-          淘汰 {selected + 1} 號
+          淘汰 {playerName(roster, selected)}
         </button>
       )}
       {winner && (

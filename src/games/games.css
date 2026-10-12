@@ -26,6 +26,7 @@
 }
 
 .game-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -324,7 +325,7 @@
   background: var(--cream-dark);
 }
 
-.box.is-open:not(.is-bomb) svg {
+.box.is-open:not(.is-bomb) .box__sprite {
   opacity: 0.25;
 }
 
@@ -634,4 +635,667 @@
   background: var(--red);
   box-shadow: var(--outline), inset -4px -4px 0 var(--red-dark);
   opacity: 1;
+}
+
+/* ---------- 遊戲列表：分區、成人模式 ---------- */
+
+.section-title {
+  margin: 28px 4px 12px;
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 24px;
+  color: var(--muted);
+}
+
+.game-card__badge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+}
+
+.badge {
+  flex: none;
+  padding: 0 6px;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--cream);
+  background: var(--red);
+  box-shadow: 0 -2px 0 0 var(--ink), 0 2px 0 0 var(--ink), -2px 0 0 0 var(--ink), 2px 0 0 0 var(--ink);
+}
+
+.adult-switch {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  width: calc(100% - 8px);
+  margin: 0 4px 16px;
+  padding: 10px 12px;
+  border: 0;
+  text-align: left;
+  color: var(--cream);
+  background: #3a3d5c;
+  box-shadow: var(--outline);
+  cursor: pointer;
+}
+
+.adult-switch__label {
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.adult-switch__label small {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--muted);
+}
+
+.adult-switch:not(.is-on) .badge {
+  background: #6b6d88;
+}
+
+.adult-switch.is-on {
+  background: #4a1020;
+}
+
+.adult-switch.is-on .devil-switch__track {
+  background: var(--red);
+}
+
+.adult-switch.is-on .devil-switch__knob {
+  transform: translateX(24px);
+}
+
+.adult-confirm p {
+  margin: 0 0 12px;
+  line-height: 24px;
+}
+
+/* ---------- 記一杯的選單 ---------- */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgb(27 27 47 / 85%);
+}
+
+.picker {
+  width: min(100%, 360px);
+  max-height: 80dvh;
+  overflow-y: auto;
+}
+
+.picker__title {
+  margin: 0 0 12px;
+  font-size: 24px;
+  line-height: 32px;
+  text-align: center;
+}
+
+.picker__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.picker__count {
+  font-size: 12px;
+  color: var(--text-soft);
+}
+
+.picker__empty {
+  line-height: 24px;
+}
+
+.picker__empty a {
+  color: var(--red);
+}
+
+.picker .game-status {
+  color: var(--green);
+}
+
+/* ---------- 骰子 ---------- */
+
+.die {
+  display: inline-block;
+}
+
+.die svg {
+  display: block;
+  width: 48px;
+  height: 48px;
+}
+
+.die.is-highlight svg {
+  filter: drop-shadow(0 0 4px var(--yellow));
+}
+
+.dice-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+}
+
+.face-picker {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 4px;
+  margin: 8px 0;
+}
+
+.face-picker__btn {
+  display: grid;
+  place-items: center;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  box-shadow: inset 0 0 0 4px transparent;
+  cursor: pointer;
+}
+
+.face-picker__btn .die svg {
+  width: 32px;
+  height: 32px;
+}
+
+.face-picker__btn.is-active {
+  background: var(--yellow);
+  box-shadow: inset 0 0 0 4px var(--ink);
+}
+
+.hands {
+  display: grid;
+  gap: 8px;
+  margin: 16px 4px;
+}
+
+.hands__row {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+}
+
+.hands__name {
+  font-size: 12px;
+  line-height: 16px;
+  overflow-wrap: anywhere;
+}
+
+.hands .die svg {
+  width: 32px;
+  height: 32px;
+}
+
+.hands .dice-row {
+  justify-content: flex-start;
+}
+
+/* ---------- 誰最可能：倒數 ---------- */
+
+.countdown {
+  font-size: 48px;
+  line-height: 60px;
+  color: var(--red);
+}
+
+/* ---------- 命運手指 ---------- */
+
+.finger-zone {
+  position: relative;
+  height: 56dvh;
+  min-height: 320px;
+  margin: 4px;
+  overflow: hidden;
+  background-color: var(--lcd-bg);
+  background-image: repeating-linear-gradient(transparent 0 3px, rgb(0 0 0 / 25%) 3px 4px);
+  box-shadow: var(--outline), inset 4px 4px 0 var(--lcd-shadow);
+  touch-action: none;
+}
+
+.finger-zone__message {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 16px;
+  font-size: 16px;
+  text-align: center;
+  color: var(--lcd-dim);
+  pointer-events: none;
+}
+
+.finger-zone.is-holding .finger-zone__message {
+  color: var(--yellow);
+  animation: blink 0.5s steps(1) infinite;
+}
+
+.finger-zone.is-picked .finger-zone__message {
+  align-items: start;
+  color: var(--yellow);
+}
+
+.finger {
+  position: absolute;
+  width: 72px;
+  height: 72px;
+  margin: -36px 0 0 -36px;
+  box-shadow: var(--outline), inset -6px -6px 0 rgb(0 0 0 / 25%);
+  pointer-events: none;
+}
+
+.finger-zone.is-holding .finger {
+  animation: pulse 0.5s steps(2) infinite;
+}
+
+.finger.is-winner {
+  z-index: 1;
+  animation: pulse 0.3s steps(2) infinite;
+  box-shadow: var(--outline), 0 0 0 12px var(--yellow), inset -6px -6px 0 rgb(0 0 0 / 25%);
+}
+
+.finger.is-out {
+  opacity: 0.2;
+}
+
+.finger-hint a {
+  color: var(--yellow);
+}
+
+/* ---------- 頭上猜詞 ---------- */
+
+.deck-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.heads-up {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: calc(100dvh - 160px);
+}
+
+.heads-up__bar {
+  display: flex;
+  justify-content: space-between;
+  margin: 4px;
+  font-size: 16px;
+  color: var(--muted);
+}
+
+.heads-up__word {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  margin: 4px;
+  padding: 16px;
+  font-size: 48px;
+  line-height: 60px;
+  text-align: center;
+  color: var(--lcd-text);
+  background-color: var(--lcd-bg);
+  box-shadow: var(--outline), inset 4px 4px 0 var(--lcd-shadow);
+}
+
+.heads-up__word.is-correct {
+  animation: flash-correct 0.4s steps(2);
+}
+
+.heads-up__word.is-pass {
+  animation: flash-pass 0.4s steps(2);
+}
+
+@keyframes flash-correct {
+  0% {
+    background-color: var(--green);
+  }
+}
+
+@keyframes flash-pass {
+  0% {
+    background-color: var(--red);
+  }
+}
+
+.heads-up__controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.heads-up__tap {
+  min-height: 96px;
+  margin: 4px;
+  border: 0;
+  font-size: 24px;
+  color: var(--cream);
+  cursor: pointer;
+}
+
+.heads-up__tap.is-pass {
+  background: var(--red);
+  box-shadow: var(--outline), inset -4px -4px 0 var(--red-dark);
+}
+
+.heads-up__tap.is-correct {
+  background: var(--green);
+  box-shadow: var(--outline), inset -4px -4px 0 var(--green-dark);
+}
+
+.answer-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 4px;
+  padding: 0;
+  list-style: none;
+}
+
+.answer-list li {
+  padding: 2px 8px;
+  font-size: 12px;
+  line-height: 20px;
+  background: #3a3d5c;
+}
+
+.answer-list .is-correct {
+  color: var(--lcd-text);
+}
+
+.answer-list .is-pass {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+/* ---------- 你畫我猜 ---------- */
+
+.draw-canvas {
+  display: block;
+  width: calc(100% - 8px);
+  aspect-ratio: 1;
+  margin: 4px;
+  background: #fff;
+  box-shadow: var(--outline);
+  image-rendering: pixelated;
+  touch-action: none;
+}
+
+.draw-tools {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin: 12px 4px;
+}
+
+.draw-tools__color,
+.draw-tools__btn {
+  width: 40px;
+  height: 40px;
+  margin: 4px;
+  padding: 0;
+  border: 0;
+  font-size: 16px;
+  color: var(--ink);
+  background: var(--cream);
+  box-shadow: var(--outline);
+  cursor: pointer;
+}
+
+.draw-tools__color.is-active,
+.draw-tools__btn.is-active {
+  box-shadow: var(--outline), 0 0 0 8px var(--yellow);
+}
+
+/* ---------- 喝酒大富翁 ---------- */
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  grid-template-rows: repeat(7, minmax(0, 1fr));
+  gap: 2px;
+  aspect-ratio: 1;
+  margin: 4px;
+  padding: 4px;
+  background: var(--green-dark);
+  box-shadow: var(--outline);
+}
+
+.board__cell {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: var(--ink);
+  background: var(--cream);
+  box-shadow: inset 0 0 0 2px var(--ink);
+}
+
+.board__cell.is-start {
+  background: var(--yellow);
+}
+
+.board__cell.is-drink,
+.board__cell.is-double,
+.board__cell.is-all {
+  background: #ffc2c7;
+}
+
+.board__cell.is-truth,
+.board__cell.is-dare {
+  background: #c7dcff;
+}
+
+.board__cell.is-slot {
+  background: #ffd9b3;
+}
+
+.board__cell.is-landed {
+  animation: blink 0.4s steps(1) 4;
+  box-shadow: inset 0 0 0 4px var(--red);
+}
+
+.board__label {
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.board__tokens {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1px;
+  max-width: 100%;
+}
+
+.board__tokens i,
+.board__turn i,
+.board-legend i {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  box-shadow: 0 0 0 1px var(--ink);
+}
+
+.board__center {
+  display: flex;
+  flex-direction: column;
+  grid-area: 2 / 2 / 7 / 7;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px;
+}
+
+.board__center .btn {
+  width: auto;
+  min-height: 40px;
+  padding: 4px 16px;
+}
+
+.board__turn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 16px;
+  color: var(--cream);
+}
+
+.board__turn i {
+  width: 12px;
+  height: 12px;
+}
+
+.board-result {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.board-result__note {
+  margin: 0 0 8px;
+  font-size: 12px;
+  color: var(--red);
+}
+
+.board-result__question {
+  margin: 12px 0;
+  line-height: 24px;
+  color: var(--blue);
+}
+
+.board-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 16px 4px 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.board-legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.board-legend .is-turn {
+  color: var(--yellow);
+}
+
+/* ---------- 記分板、分組點名 ---------- */
+
+.roster-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  margin: 0 4px 8px;
+}
+
+.roster-form .btn {
+  width: auto;
+  margin: 4px;
+}
+
+.roster {
+  display: grid;
+  gap: 4px;
+  margin: 8px 0 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.roster__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 44px 40px 44px 28px;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 4px 4px 12px;
+  background: #3a3d5c;
+}
+
+.roster__row .btn {
+  width: 40px;
+  min-height: 40px;
+  padding: 0;
+  font-size: 24px;
+}
+
+.roster__name {
+  display: flex;
+  flex-direction: column;
+  overflow-wrap: anywhere;
+}
+
+.roster__crown {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--yellow);
+}
+
+.roster__count {
+  font-size: 24px;
+  text-align: center;
+}
+
+.roster__water {
+  padding: 2px 6px;
+  border: 0;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--ink);
+  background: #4cb8f0;
+  cursor: pointer;
+  animation: blink 0.8s steps(1) infinite;
+}
+
+.roster__remove {
+  border: 0;
+  font-size: 16px;
+  color: var(--muted);
+  background: none;
+  cursor: pointer;
+}
+
+.order-list {
+  margin: 0 4px 16px;
+  padding: 12px 12px 12px 40px;
+  font-size: 16px;
+  line-height: 32px;
+  background: #3a3d5c;
+}
+
+.team-list {
+  display: grid;
+  gap: 8px;
+  margin: 0 4px 16px;
+}
+
+.team-list__team {
+  padding: 8px 12px;
+  background: #3a3d5c;
+  border-left: 8px solid;
+}
+
+.team-list__team p {
+  margin: 0;
+  line-height: 24px;
+}
+
+.team-list__name {
+  font-size: 12px;
 }
