@@ -152,6 +152,9 @@ export function SlotMachine({ active, autoSpin }: Props) {
       >
         <header className="marquee">
           <div className="stripes" aria-hidden="true" />
+          <a className="help-btn" id="help-btn" href="#guide" aria-label="在家玩指南：要先準備什麼">
+            ?
+          </a>
           <div className="lights" aria-hidden="true" />
           <h1 className="title">
             <span className="title__brand">{mode === 'devil' ? '惡魔' : '超商'}</span>調酒拉霸機

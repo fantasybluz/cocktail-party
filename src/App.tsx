@@ -26,6 +26,7 @@ import { navigate, useHashRoute } from './lib/router.ts'
 import { sound, vibrate } from './lib/sound.ts'
 import { readStore, writeStore } from './lib/storage.ts'
 import { PartyContext, type BoomOptions, type Party, type Player, type RecordOptions, type TruthDareType } from './party.ts'
+import { HomeGuide } from './slot/HomeGuide.tsx'
 import { SlotMachine } from './slot/SlotMachine.tsx'
 import { Scoreboard } from './tools/Scoreboard.tsx'
 import { Teams } from './tools/Teams.tsx'
@@ -33,7 +34,7 @@ import { Teams } from './tools/Teams.tsx'
 type PageId = GameId | ToolId
 
 const PAGES: { id: PageId; name: string }[] = [...GAME_LIST, ...TOOL_LIST]
-const VIEWS = new Set<string>(['slot', 'games', ...PAGES.map((page) => page.id)])
+const VIEWS = new Set<string>(['slot', 'guide', 'games', ...PAGES.map((page) => page.id)])
 
 // 跟時間、手指有關的遊戲離開就卸載（停止計時）；其他遊戲切走再回來會保留進度
 const UNMOUNT_WHEN_HIDDEN = new Set<PageId>(['wheel', 'hot-potato', 'fate-finger', 'heads-up', 'draw-guess', 'teams'])
@@ -169,6 +170,11 @@ export default function App() {
         <section className="view" data-view="slot" hidden={view !== 'slot'}>
           <SlotMachine active={view === 'slot'} autoSpin={autoSpin} />
         </section>
+        {view === 'guide' && (
+          <section className="view" data-view="guide" aria-label="在家玩指南">
+            <HomeGuide />
+          </section>
+        )}
         <section className="view" data-view="games" hidden={view !== 'games'}>
           <GameMenu />
         </section>
@@ -184,7 +190,7 @@ export default function App() {
         <Footer />
       </main>
 
-      <TabBar active={view === 'slot' ? 'slot' : 'games'} />
+      <TabBar active={view === 'slot' || view === 'guide' ? 'slot' : 'games'} />
 
       {activeBoom && (
         <Boom

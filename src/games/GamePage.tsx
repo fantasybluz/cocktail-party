@@ -9,17 +9,19 @@ interface Props {
   badge?: string
   // 聚會工具頁不需要右上角的「記一杯」
   noRecord?: boolean
+  // 返回鍵要回到哪一頁
+  back?: string
   children: ReactNode
 }
 
 // 每個遊戲頁共用的標題列：返回、名稱、玩法說明
 // 每個遊戲頁右上角都有「記一杯」，任何時候都能記到記分板
-export function GamePage({ title, rule, badge, noRecord = false, children }: Props) {
+export function GamePage({ title, rule, badge, noRecord = false, back = '#games', children }: Props) {
   const { recordDrink } = useParty()
   return (
     <>
       <header className="game-head">
-        <a className="back-btn" href="#games" aria-label="返回遊戲列表">
+        <a className="back-btn" href={back} aria-label="返回">
           ◀<span className="back-btn__text"> 返回</span>
         </a>
         <h2 className="game-title">{title}</h2>

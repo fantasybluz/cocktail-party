@@ -8,6 +8,7 @@
 }
 
 .marquee {
+  position: relative;
   margin: 4px 4px 16px;
   padding-bottom: 8px;
   background: var(--cream);
@@ -578,4 +579,107 @@
 
 .card__note--devil {
   color: var(--red-dark);
+}
+
+/* ---------- 在家玩指南 ---------- */
+
+.help-btn {
+  position: absolute;
+  top: 34px; /* 跟標題同一列，不蓋到跑馬燈 */
+  right: 8px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--cream);
+  text-decoration: none;
+  background: var(--green);
+  box-shadow: 0 -2px 0 0 var(--ink), 0 2px 0 0 var(--ink), -2px 0 0 0 var(--ink), 2px 0 0 0 var(--ink),
+    inset -2px -2px 0 var(--green-dark);
+}
+
+.help-btn:active {
+  transform: translateY(2px);
+}
+
+.cabinet.is-devil .help-btn {
+  background: var(--red);
+  box-shadow: 0 -2px 0 0 var(--cream), 0 2px 0 0 var(--cream), -2px 0 0 0 var(--cream), 2px 0 0 0 var(--cream),
+    inset -2px -2px 0 var(--red-dark);
+}
+
+.guide__title {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: normal;
+}
+
+.guide__list {
+  margin: 0;
+  padding-left: 20px;
+  line-height: 24px;
+}
+
+.guide__list li + li {
+  margin-top: 4px;
+}
+
+.guide__text {
+  margin: 12px 0 0;
+  line-height: 24px;
+}
+
+.guide .card__rows + .guide__text,
+.guide .guide__list + .card__rows {
+  margin-top: 12px;
+}
+
+.guide-set__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  font-size: 16px;
+}
+
+.guide-set__head strong {
+  font-size: 24px;
+  font-weight: normal;
+  line-height: 32px;
+}
+
+.guide-set__people {
+  font-size: 12px;
+  color: var(--text-soft);
+}
+
+.guide-set__count {
+  margin-left: auto;
+}
+
+.chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 6px;
+  font-size: 12px;
+  line-height: 22px;
+  background: var(--cream-dark);
+}
+
+.chip b {
+  font-weight: normal;
+  color: var(--red);
+}
+
+.guide--warning {
+  box-shadow: var(--outline), inset 0 0 0 4px var(--red), inset -8px -8px 0 var(--cream-dark);
 }
