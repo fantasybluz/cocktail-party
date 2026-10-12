@@ -52,7 +52,7 @@ export function Teams() {
   }
 
   return (
-    <GamePage title="分組點名" rule="記分板有名單就用名字，沒有就用號碼。">
+    <GamePage title="分組點名" rule="記分板有名單就用名字，沒有就用號碼。" noRecord>
       <div className="segmented" role="group" aria-label="模式">
         {MODES.map(({ id, label }) => (
           <button

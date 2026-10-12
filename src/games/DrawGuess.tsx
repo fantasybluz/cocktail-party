@@ -3,6 +3,7 @@ import { GameResult } from '../components/GameResult.tsx'
 import { DRAW_WORDS } from '../data/games.ts'
 import { makeBag } from '../lib/random.ts'
 import { sound, vibrate } from '../lib/sound.ts'
+import { useParty } from '../party.ts'
 import { GamePage } from './GamePage.tsx'
 
 const GRID = 64 // 畫布 64x64 格，放大顯示成像素畫
@@ -15,6 +16,7 @@ const nextWord = makeBag(DRAW_WORDS)
 type Step = 'ready' | 'drawing' | 'done'
 
 export function DrawGuess() {
+  const { recordDrink } = useParty()
   const [step, setStep] = useState<Step>('ready')
   const [word, setWord] = useState(() => nextWord())
   const [peek, setPeek] = useState(false)
@@ -249,7 +251,10 @@ export function DrawGuess() {
           text={guessed ? '猜中的人指定一個人喝' : '畫的人喝'}
           note={`題目：${word}`}
           loser={!guessed}
-          actions={[{ label: '下一題', variant: 'orange', onClick: nextRound }]}
+          actions={[
+            ...(guessed ? [{ label: '記一杯', onClick: () => recordDrink({ title: '被指定的是誰？', reason: `你畫我猜：${word}` }) }] : []),
+            { label: '下一題', variant: 'orange' as const, onClick: nextRound },
+          ]}
         />
       )}
     </GamePage>

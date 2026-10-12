@@ -25,7 +25,7 @@ import { WhoIsSpy } from './games/WhoIsSpy.tsx'
 import { navigate, useHashRoute } from './lib/router.ts'
 import { sound, vibrate } from './lib/sound.ts'
 import { readStore, writeStore } from './lib/storage.ts'
-import { PartyContext, type BoomOptions, type Party, type Player, type TruthDareType } from './party.ts'
+import { PartyContext, type BoomOptions, type Party, type Player, type RecordOptions, type TruthDareType } from './party.ts'
 import { SlotMachine } from './slot/SlotMachine.tsx'
 import { Scoreboard } from './tools/Scoreboard.tsx'
 import { Teams } from './tools/Teams.tsx'
@@ -56,7 +56,7 @@ export default function App() {
   const [truthDare, setTruthDare] = useState<TruthDareCard | null>(null)
   const [roster, setRoster] = useState(loadRoster)
   const [adult, setAdultState] = useState(() => readStore<boolean>(ADULT_KEY, false) === true)
-  const [picking, setPicking] = useState(false)
+  const [picking, setPicking] = useState<RecordOptions | null>(null)
   // 記下爆炸發生在哪一頁，換頁（包含按上一頁）就不再顯示
   const [boom, setBoom] = useState<(BoomOptions & { view: string }) | null>(null)
   const activeBoom = boom?.view === view ? boom : null
@@ -80,8 +80,9 @@ export default function App() {
       updateRoster(update) {
         setRoster(update)
       },
-      recordDrink() {
-        setPicking(true)
+      recordDrink(options: RecordOptions = {}) {
+        sound.unlock()
+        setPicking(options)
       },
       adult,
       setAdult(value: boolean) {
@@ -196,17 +197,29 @@ export default function App() {
             setBoom(null)
             party.loserSpin()
           }}
-          onRecord={() => setPicking(true)}
+          onRecord={() => setPicking({ title: '誰喝一杯？', reason: activeBoom.text })}
         />
       )}
 
       {picking && (
         <DrinkPicker
           roster={roster}
-          onAdd={(index) =>
-            party.updateRoster((list) => list.map((player, i) => (i === index ? { ...player, drinks: player.drinks + 1 } : player)))
+          title={picking.title}
+          reason={picking.reason}
+          onChange={(names, delta) =>
+            setRoster((list) =>
+              list.map((player) => {
+                if (!names.includes(player.name)) return player
+                const drinks = Math.max(0, player.drinks + delta)
+                return { ...player, drinks, water: Math.min(player.water, drinks) }
+              }),
+            )
           }
-          onClose={() => setPicking(false)}
+          onAddPlayer={(name) => setRoster((list) => [...list, { name, drinks: 0, water: 0 }])}
+          onClose={() => {
+            setPicking(null)
+            picking.onDone?.()
+          }}
         />
       )}
     </PartyContext>

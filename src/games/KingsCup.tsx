@@ -3,10 +3,12 @@ import { GameResult } from '../components/GameResult.tsx'
 import { PlayingCard } from '../components/PlayingCard.tsx'
 import { KINGS_CUP_RULES } from '../data/games.ts'
 import { sound, vibrate } from '../lib/sound.ts'
+import { useParty } from '../party.ts'
 import { newDeck, RANKS, type Card } from './cards.ts'
 import { GamePage } from './GamePage.tsx'
 
 export function KingsCup() {
+  const { recordDrink } = useParty()
   const [deck, setDeck] = useState(newDeck)
   const [kings, setKings] = useState(0)
   const [drawn, setDrawn] = useState<Card | null>(null) // 剛抽到的牌
@@ -82,6 +84,16 @@ export function KingsCup() {
           {title}
         </p>
         <p className="kc-rule__desc">{desc}</p>
+        {drawn && !note && (
+          <button
+            className="btn btn--small"
+            id="kc-record"
+            type="button"
+            onClick={() => recordDrink({ title: '誰喝了？', reason: `${title}：${desc}` })}
+          >
+            記一杯
+          </button>
+        )}
       </div>
       {kings === 4 && (
         <GameResult

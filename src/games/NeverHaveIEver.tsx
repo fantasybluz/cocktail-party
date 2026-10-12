@@ -9,7 +9,7 @@ const nextNormal = makeBag(NEVER_HAVE_I_EVER)
 const nextAdult = makeBag(NEVER_ADULT)
 
 export function NeverHaveIEver() {
-  const { adult } = useParty()
+  const { adult, recordDrink } = useParty()
   const [current, setCurrent] = useState<{ text: string; count: number } | null>(null)
 
   function next() {
@@ -31,6 +31,16 @@ export function NeverHaveIEver() {
       <p className="game-status" id="nv-status">
         {current && `第 ${current.count} 題（共 ${(adult ? NEVER_ADULT : NEVER_HAVE_I_EVER).length} 題，抽完才會重複）`}
       </p>
+      {current && (
+        <button
+          className="btn"
+          id="nv-record"
+          type="button"
+          onClick={() => recordDrink({ title: '誰做過？各喝一口', reason: `我從來沒有⋯${current.text}` })}
+        >
+          記錄做過的人
+        </button>
+      )}
       <button className="btn btn--orange btn--big" id="nv-next" type="button" onClick={next}>
         下一題
       </button>

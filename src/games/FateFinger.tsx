@@ -123,7 +123,7 @@ export function FateFinger() {
           <button className="btn btn--orange" type="button" onClick={loserSpin}>
             去轉拉霸機
           </button>
-          <button className="btn" type="button" onClick={recordDrink}>
+          <button className="btn" type="button" onClick={() => recordDrink({ title: '誰被選中了？', reason: '命運手指' })}>
             記一杯
           </button>
         </div>

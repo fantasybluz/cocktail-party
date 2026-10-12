@@ -70,7 +70,11 @@ export function MostLikely() {
         </button>
       </div>
       {count === 0 && (
-        <button className="btn btn--small" type="button" onClick={recordDrink}>
+        <button
+          className="btn btn--small"
+          type="button"
+          onClick={() => recordDrink({ title: '被指最多的是誰？', reason: `在場誰最可能⋯${question?.text ?? ''}` })}
+        >
           記一杯到記分板
         </button>
       )}

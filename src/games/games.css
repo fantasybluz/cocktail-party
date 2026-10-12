@@ -744,9 +744,20 @@
   gap: 4px;
 }
 
+.picker__list .btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 20px;
+}
+
 .picker__count {
   font-size: 12px;
   color: var(--text-soft);
+}
+
+.picker__list .btn--orange .picker__count {
+  color: var(--cream);
 }
 
 .picker__empty {
@@ -1298,4 +1309,65 @@
 
 .team-list__name {
   font-size: 12px;
+}
+
+/* ---------- 記一杯 ---------- */
+
+.record-btn {
+  flex: none;
+  margin: 4px 4px 4px auto;
+  padding: 4px 10px;
+  border: 0;
+  font-size: 12px;
+  line-height: 20px;
+  color: var(--ink);
+  background: var(--yellow);
+  box-shadow: var(--outline), inset -4px -4px 0 #d9a800;
+  cursor: pointer;
+}
+
+.record-btn:active {
+  transform: translateY(2px);
+}
+
+.picker__reason {
+  margin: -4px 0 12px;
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  color: var(--text-soft);
+}
+
+.picker__form {
+  margin: 12px 0 8px;
+}
+
+.q-card__outcome {
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.q-card__outcome.is-success {
+  color: var(--green);
+}
+
+.q-card__outcome.is-fail {
+  color: var(--red);
+}
+
+/* ---------- 很窄的手機：遊戲標題列 ---------- */
+
+@media (width <= 350px) {
+  .game-head {
+    gap: 8px;
+  }
+
+  .back-btn__text {
+    display: none;
+  }
+
+  .game-title {
+    font-size: 20px;
+    line-height: 28px;
+  }
 }

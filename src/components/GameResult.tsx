@@ -23,7 +23,7 @@ export function GameResult({ tag, text, note, loser = false, actions = [], id }:
     ...(loser
       ? [
           { label: '輸家去轉拉霸機', variant: 'orange' as const, onClick: loserSpin },
-          { label: '記一杯到記分板', onClick: recordDrink },
+          { label: '記一杯到記分板', onClick: () => recordDrink({ title: '誰喝一杯？', reason: `${tag}：${text}` }) },
         ]
       : []),
     ...actions,

@@ -275,6 +275,13 @@ button {
   box-shadow: var(--outline), inset -4px -4px 0 var(--blue-dark), inset 4px 4px 0 var(--blue-light);
 }
 
+.btn--green {
+  color: var(--cream);
+  text-shadow: 2px 2px 0 var(--green-dark);
+  background: var(--green-light);
+  box-shadow: var(--outline), inset -4px -4px 0 var(--green-dark), inset 4px 4px 0 #6fd6a8;
+}
+
 .btn--big {
   min-height: 60px;
   font-size: 24px;

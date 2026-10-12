@@ -17,6 +17,15 @@ export interface Player {
 
 export const WATER_EVERY = 3
 
+export interface RecordOptions {
+  // 選單標題，預設「誰喝了？」
+  title?: string
+  // 為什麼要喝，例如題目內容
+  reason?: string
+  // 按完成關掉選單之後要做的事（例如換下一題）
+  onDone?: () => void
+}
+
 // 各個遊戲共用的動作和資料
 export interface Party {
   // 遊戲輸了，跳到拉霸機幫輸家轉一杯
@@ -29,7 +38,7 @@ export interface Party {
   roster: Player[]
   updateRoster: (update: (roster: Player[]) => Player[]) => void
   // 打開「記一杯」的選單，選誰喝就幫誰 +1
-  recordDrink: () => void
+  recordDrink: (options?: RecordOptions) => void
   // 成人模式：題目類遊戲改用感情、曖昧類的題庫（18+）
   adult: boolean
   setAdult: (adult: boolean) => void

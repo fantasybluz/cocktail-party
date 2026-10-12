@@ -48,6 +48,7 @@ export function Scoreboard() {
 
   return (
     <GamePage
+      noRecord
       title="喝酒記分板"
       rule={`記每個人喝了幾杯，每多 ${WATER_EVERY} 杯提醒喝水。名單也會用在吹牛骰、大富翁、誰是臥底，遊戲裡按「記一杯」也會記到這裡。`}
     >

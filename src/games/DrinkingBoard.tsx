@@ -197,7 +197,16 @@ export function DrinkingBoard() {
       case 'left':
       case 'right':
       case 'pick':
-        return [{ label: '記一杯', className: 'btn', onClick: recordDrink }]
+      case 'all':
+      case 'never':
+      case 'likely':
+        return [
+          {
+            label: kind === 'all' ? '記大家各一杯' : '記一杯',
+            className: 'btn',
+            onClick: () => recordDrink({ title: '誰喝了？', reason: `${square?.title}：${landing?.question ?? square?.desc}` }),
+          },
+        ]
       default:
         return []
     }

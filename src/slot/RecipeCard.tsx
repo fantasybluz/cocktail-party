@@ -81,11 +81,9 @@ export function RecipeCard({ ref, recipe, loser, devil, shareDisabled, onShare }
         <p className="card__note">1 份 ≈ 一瓶 50ml 迷你酒，酒精濃度沒算冰塊融化，僅供參考</p>
       )}
 
-      {loser && (
-        <button className="btn" type="button" onClick={recordDrink}>
-          記一杯到記分板
-        </button>
-      )}
+      <button className="btn" type="button" onClick={() => recordDrink({ title: '誰喝這杯？', reason: recipe.name })}>
+        誰喝這杯？記一杯
+      </button>
       <button className="share-btn" id="share" type="button" disabled={shareDisabled} onClick={onShare}>
         分享到 LINE
       </button>
