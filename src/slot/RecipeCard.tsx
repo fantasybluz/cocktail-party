@@ -1,5 +1,7 @@
 import type { Ref } from 'react'
+import { ShareImageButton } from '../components/ShareImageButton.tsx'
 import { useParty } from '../party.ts'
+import { drawRecipeImage } from './recipeImage.ts'
 import { estimate, fizzLabel, ratioText, sweetLabel, type Recipe } from './recipes.ts'
 
 interface Props {
@@ -81,12 +83,20 @@ export function RecipeCard({ ref, recipe, loser, devil, shareDisabled, onShare }
         <p className="card__note">1 份 ≈ 一瓶 50ml 迷你酒，酒精濃度沒算冰塊融化，僅供參考</p>
       )}
 
-      <button className="btn" type="button" onClick={() => recordDrink({ title: '誰喝這杯？', reason: recipe.name })}>
+      <button className="btn" type="button" onClick={() => recordDrink({ title: '誰喝這杯？', reason: recipe.name, kind: 'slot' })}>
         誰喝這杯？記一杯
       </button>
-      <button className="share-btn" id="share" type="button" disabled={shareDisabled} onClick={onShare}>
-        分享到 LINE
-      </button>
+      <div className="btn-row">
+        <ShareImageButton
+          render={() => drawRecipeImage(recipe, { devil, loser })}
+          filename={`${recipe.name}.png`}
+          message={`今晚調這杯：${recipe.name}`}
+          label="存成圖片"
+        />
+        <button className="share-btn" id="share" type="button" disabled={shareDisabled} onClick={onShare}>
+          分享到 LINE
+        </button>
+      </div>
     </section>
   )
 }

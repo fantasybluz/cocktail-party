@@ -7,7 +7,7 @@ const MAX_PLAYERS = 12
 const MAX_NAME = 8
 
 export function Scoreboard() {
-  const { roster, updateRoster } = useParty()
+  const { roster, updateRoster, changeDrinks, logWater, resetParty } = useParty()
   const [name, setName] = useState('')
   const [confirmReset, setConfirmReset] = useState<'count' | 'all' | null>(null)
 
@@ -21,15 +21,9 @@ export function Scoreboard() {
     sound.blip(true)
   }
 
-  function change(index: number, delta: number) {
+  function change(name: string, delta: number) {
     sound.unlock()
-    updateRoster((list) =>
-      list.map((player, i) => {
-        if (i !== index) return player
-        const drinks = Math.max(0, player.drinks + delta)
-        return { ...player, drinks, water: Math.min(player.water, drinks) }
-      }),
-    )
+    changeDrinks([name], delta, { game: '喝酒記分板', kind: 'other' })
     sound.blip(delta > 0)
   }
 
@@ -38,7 +32,7 @@ export function Scoreboard() {
       setConfirmReset(kind)
       return
     }
-    updateRoster((list) => (kind === 'all' ? [] : list.map((player) => ({ ...player, drinks: 0, water: 0 }))))
+    resetParty(kind === 'all')
     setConfirmReset(null)
     sound.blip(false)
   }
@@ -87,6 +81,9 @@ export function Scoreboard() {
           <p className="game-status" id="sb-total">
             總共 {total} 杯
           </p>
+          <a className="btn btn--orange" id="sb-summary" href="#summary">
+            派對結算
+          </a>
           <ul className="roster">
             {roster.map((player, i) => {
               const needWater = player.drinks - player.water >= WATER_EVERY
@@ -97,17 +94,13 @@ export function Scoreboard() {
                     {top > 0 && player.drinks === top && <small className="roster__crown">喝最多</small>}
                   </span>
                   {needWater ? (
-                    <button
-                      className="roster__water"
-                      type="button"
-                      onClick={() => updateRoster((list) => list.map((p, j) => (j === i ? { ...p, water: p.drinks } : p)))}
-                    >
+                    <button className="roster__water" type="button" onClick={() => logWater(player.name)}>
                       該喝水了
                     </button>
                   ) : (
                     <span />
                   )}
-                  <button className="btn" type="button" aria-label={`${player.name} 減一杯`} onClick={() => change(i, -1)}>
+                  <button className="btn" type="button" aria-label={`${player.name} 減一杯`} onClick={() => change(player.name, -1)}>
                     －
                   </button>
                   <span className="roster__count">{player.drinks}</span>
@@ -115,7 +108,7 @@ export function Scoreboard() {
                     className="btn btn--orange"
                     type="button"
                     aria-label={`${player.name} 加一杯`}
-                    onClick={() => change(i, 1)}
+                    onClick={() => change(player.name, 1)}
                   >
                     ＋
                   </button>
@@ -133,7 +126,7 @@ export function Scoreboard() {
           </ul>
           <div className="btn-row">
             <button className="btn" type="button" onClick={() => reset('count')}>
-              {confirmReset === 'count' ? '再按一次歸零' : '杯數歸零'}
+              {confirmReset === 'count' ? '再按一次歸零' : '開新的一場'}
             </button>
             <button className="btn btn--red" type="button" onClick={() => reset('all')}>
               {confirmReset === 'all' ? '再按一次清空' : '清空名單'}

@@ -34,7 +34,7 @@ export function TruthOrDare({ card, adult, onDraw }: Props) {
     if (!card) return
     setResolved({ id: card.id, outcome: 'fail' })
     sound.lose()
-    recordDrink({ title: '誰喝一杯？', reason: `挑戰失敗：${card.text}` })
+    recordDrink({ title: '誰喝一杯？', reason: `挑戰失敗：${card.text}`, kind: 'challenge' })
   }
 
   return (

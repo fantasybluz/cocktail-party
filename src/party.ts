@@ -17,13 +17,34 @@ export interface Player {
 
 export const WATER_EVERY = 3
 
+// 為什麼喝：派對結算用來頒獎
+export type DrinkKind = 'boom' | 'challenge' | 'lose' | 'slot' | 'other'
+
+// 每記一杯（或喝一次水）都留一筆，派對結算從這裡算統計
+export interface LogEntry {
+  name: string
+  at: number
+  // 在哪個遊戲記的
+  game: string
+  kind: DrinkKind | 'water'
+}
+
 export interface RecordOptions {
   // 選單標題，預設「誰喝了？」
   title?: string
   // 為什麼要喝，例如題目內容
   reason?: string
+  // 喝的原因分類，預設 other
+  kind?: DrinkKind
+  // 在哪個遊戲，預設是目前這一頁
+  game?: string
   // 按完成關掉選單之後要做的事（例如換下一題）
   onDone?: () => void
+}
+
+export interface DrinkMeta {
+  game: string
+  kind: DrinkKind
 }
 
 // 各個遊戲共用的動作和資料
@@ -37,8 +58,18 @@ export interface Party {
   // 記分板的玩家名單，其他遊戲也用來顯示名字
   roster: Player[]
   updateRoster: (update: (roster: Player[]) => Player[]) => void
+  // 幫這些人 +1／-1 杯，同時寫進紀錄（-1 會刪掉那個人最後一筆）
+  changeDrinks: (names: string[], delta: number, meta: DrinkMeta) => void
+  // 按了「該喝水了」
+  logWater: (name: string) => void
+  // 派對紀錄（每一杯、每次喝水）
+  log: LogEntry[]
+  // 開新的一場：杯數和紀錄歸零；clearPlayers 連名單一起清掉
+  resetParty: (clearPlayers?: boolean) => void
   // 打開「記一杯」的選單，選誰喝就幫誰 +1
   recordDrink: (options?: RecordOptions) => void
+  // 目前這一頁的名稱（分享圖標題用）
+  pageName: string
   // 成人模式：題目類遊戲改用感情、曖昧類的題庫（18+）
   adult: boolean
   setAdult: (adult: boolean) => void

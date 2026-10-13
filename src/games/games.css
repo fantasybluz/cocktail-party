@@ -1371,3 +1371,120 @@
     line-height: 28px;
   }
 }
+
+/* ---------- 派對結算 ---------- */
+
+.summary-head {
+  margin-top: 4px;
+}
+
+.award-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.award {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
+  column-gap: 8px;
+  align-items: center;
+  margin: 4px;
+  padding: 12px;
+}
+
+/* stylelint-disable-next-line no-descending-specificity -- 跟骰子的 svg 是不同元素 */
+.award svg {
+  display: block;
+  grid-row: 1 / 4;
+  width: 48px;
+  height: 48px;
+}
+
+.award__title {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--text-soft);
+}
+
+.award__names {
+  font-size: 16px;
+  font-weight: normal;
+  line-height: 20px;
+
+  /* 多個名字時只在「、」後面換行，不把名字拆開 */
+  word-break: keep-all;
+  overflow-wrap: anywhere;
+}
+
+.award__value {
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--red);
+}
+
+.summary-bars {
+  display: grid;
+  gap: 10px;
+  margin: 0 4px 16px;
+  padding: 0;
+  list-style: none;
+}
+
+.summary-bars li {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) 32px;
+  gap: 4px 8px;
+  align-items: center;
+}
+
+.summary-bars__name {
+  overflow-wrap: anywhere;
+}
+
+.summary-bars__bar {
+  height: 20px;
+  background: #3a3d5c;
+}
+
+.summary-bars__bar i {
+  display: block;
+  height: 100%;
+  background: var(--orange);
+}
+
+.summary-bars__count {
+  text-align: right;
+}
+
+.summary-bars__detail {
+  grid-column: 2 / 4;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--muted);
+}
+
+/* ---------- 分享圖預覽 ---------- */
+
+.image-preview {
+  width: min(100%, 420px);
+  max-height: 88dvh;
+  overflow-y: auto;
+  text-align: center;
+}
+
+.image-preview__hint {
+  margin: 0 0 12px;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--text-soft);
+}
+
+.image-preview img {
+  display: block;
+  width: 100%;
+  margin-bottom: 12px;
+  box-shadow: 0 0 0 4px var(--ink);
+  -webkit-touch-callout: default;
+}

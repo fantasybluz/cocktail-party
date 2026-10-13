@@ -19,7 +19,7 @@ export type GameId =
   | 'two-truths'
 
 // 聚會工具（列在遊戲列表下面）
-export type ToolId = 'scoreboard' | 'teams'
+export type ToolId = 'scoreboard' | 'summary' | 'teams'
 
 export interface GameMeta<Id extends string = GameId> {
   id: Id
@@ -193,6 +193,7 @@ export const GAME_LIST: GameMeta[] = [
 
 export const TOOL_LIST: GameMeta<ToolId>[] = [
   { id: 'scoreboard', name: '喝酒記分板', desc: '記每個人喝幾杯', icon: 'mug', colors: { a: '#f2c230', b: '#fff7e3' } },
+  { id: 'summary', name: '派對結算', desc: '頒獎、存成圖片分享', icon: 'crown', colors: { a: '#ffd23f', b: '#3a7bd5' } },
   { id: 'teams', name: '分組點名', desc: '隨機點名、排順序、分組', icon: 'people', colors: { a: '#3a7bd5', b: '#e63946' } },
 ]
 
