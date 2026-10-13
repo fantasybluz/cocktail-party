@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 // 到 https://www.goatcounter.com 註冊後把代碼填在這裡（例如 'mixslot'），
 // 並在 GoatCounter 設定打開「Allow adding visitor counts on your website」，
 // 就會開始記錄瀏覽人數，頁尾顯示「你是第 N 個酒鬼」
-const GOATCOUNTER_CODE: string = ''
+const GOATCOUNTER_CODE: string = 'cocktail-party'
 
 declare global {
   interface Window {

@@ -162,10 +162,10 @@ src/
 
 ## 瀏覽人數
 
-用 [GoatCounter](https://www.goatcounter.com) 記錄，還沒啟用。註冊後：
-
-1. 把代碼填到 `src/lib/visitors.ts` 的 `GOATCOUNTER_CODE`
-2. 在 GoatCounter 設定打開「Allow adding visitor counts on your website」
+用 [GoatCounter](https://www.goatcounter.com) 記錄，後台在 https://cocktail-party.goatcounter.com 。
+代碼寫在 `src/lib/visitors.ts` 的 `GOATCOUNTER_CODE`；要在頁尾顯示人數，GoatCounter 設定要打開
+「Allow adding visitor counts on your website」（沒打開時 `/counter/TOTAL.json` 會回 403，頁尾就不顯示）。
+本機（localhost、127.0.0.1）開的不會被記錄。
 
 頁尾就會顯示「你是第 N 個酒鬼」（GoatCounter 的總數有最多四小時的快取，是大概的數字），
 後台也看得到每個遊戲頁的瀏覽數。
