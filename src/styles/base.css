@@ -147,6 +147,7 @@ button {
 
 .footer {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
@@ -164,6 +165,18 @@ button {
   font-size: 12px;
   line-height: 18px;
   color: var(--muted);
+}
+
+.author {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 12px;
+  line-height: 18px;
+  color: var(--muted);
+}
+
+.author a {
+  color: var(--yellow);
 }
 
 .sound-btn {

@@ -17,6 +17,12 @@ export function Footer() {
       <button className="sound-btn" id="sound" type="button" aria-pressed={soundOn} onClick={() => sound.toggle()}>
         音效 {soundOn ? '開' : '關'}
       </button>
+      <p className="author">
+        author{' '}
+        <a href="https://www.instagram.com/fantasybluzz/" target="_blank" rel="noopener noreferrer">
+          @fantasybluz
+        </a>
+      </p>
     </footer>
   )
 }
