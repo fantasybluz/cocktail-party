@@ -1488,3 +1488,211 @@
   box-shadow: 0 0 0 4px var(--ink);
   -webkit-touch-callout: default;
 }
+
+/* ---------- 輪流挑戰（停在 10 秒、反應力） ---------- */
+
+.segmented--two {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.tap-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: calc(100% - 8px);
+  min-height: 42dvh;
+  margin: 4px 4px 16px;
+  padding: 16px;
+  border: 0;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--lcd-text);
+  background-color: var(--lcd-bg);
+  background-image: repeating-linear-gradient(transparent 0 3px, rgb(0 0 0 / 25%) 3px 4px);
+  box-shadow: var(--outline), inset 4px 4px 0 var(--lcd-shadow);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.tap-zone__big {
+  font-size: 48px;
+  font-weight: normal;
+  line-height: 60px;
+}
+
+.tap-zone.is-running .tap-zone__big {
+  animation: blink 1s steps(1) infinite;
+}
+
+.tap-zone.is-waiting {
+  color: var(--cream);
+  background-color: var(--red-dark);
+}
+
+.tap-zone.is-go {
+  color: var(--ink);
+  background-color: var(--green-light);
+}
+
+.tap-zone.is-go .tap-zone__big {
+  font-size: 72px;
+  line-height: 84px;
+}
+
+.rank-list {
+  display: grid;
+  gap: 6px;
+  margin: 0 4px 16px;
+  padding: 0;
+  list-style: none;
+  counter-reset: rank;
+}
+
+.rank-list li {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  gap: 2px 8px;
+  align-items: center;
+  padding: 6px 12px;
+  background: #3a3d5c;
+  counter-increment: rank;
+}
+
+.rank-list li::before {
+  content: counter(rank);
+  grid-row: 1 / 3;
+  color: var(--muted);
+}
+
+.rank-list__value {
+  text-align: right;
+}
+
+.rank-list__note {
+  grid-column: 2 / 4;
+  font-size: 12px;
+  line-height: 16px;
+  color: var(--muted);
+}
+
+.rank-list .is-loser {
+  box-shadow: inset 4px 0 0 var(--red);
+  color: var(--red-light);
+}
+
+.rank-list .is-best {
+  box-shadow: inset 4px 0 0 var(--yellow);
+  color: var(--yellow);
+}
+
+/* ---------- 記憶挑戰 ---------- */
+
+.memory-pads {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  aspect-ratio: 1;
+  max-width: 360px;
+  margin: 8px auto 16px;
+}
+
+.memory-pad {
+  margin: 4px;
+  border: 0;
+  box-shadow: var(--outline), inset -6px -6px 0 rgb(0 0 0 / 30%);
+  cursor: pointer;
+  opacity: 0.45;
+  touch-action: manipulation;
+}
+
+.memory-pad:disabled {
+  cursor: default;
+}
+
+.memory-pads.is-input .memory-pad {
+  opacity: 0.8;
+}
+
+.memory-pad.is-lit {
+  opacity: 1;
+  box-shadow: var(--outline), 0 0 0 8px var(--cream), inset -6px -6px 0 rgb(0 0 0 / 30%);
+}
+
+/* ---------- 瘋狂海盜桶 ---------- */
+
+.pirate-stage {
+  position: relative;
+  padding-top: 112px; /* 上面留 40px 給跳出來的海盜，才不會蓋到標題 */
+  margin: 0 4px 12px;
+}
+
+.pirate {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  z-index: 0;
+  width: 96px;
+  margin-left: -48px;
+}
+
+/* stylelint-disable-next-line no-descending-specificity -- 跟骰子的 svg 是不同元素 */
+.pirate svg {
+  display: block;
+  width: 96px;
+  height: 96px;
+}
+
+.pirate.is-popped {
+  animation: pirate-pop 0.9s steps(6) forwards;
+}
+
+@keyframes pirate-pop {
+  40% {
+    transform: translateY(-100px) rotate(180deg);
+  }
+
+  100% {
+    transform: translateY(-40px) rotate(360deg);
+  }
+}
+
+.barrel {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 10px;
+  padding: 20px 16px;
+  background:
+    linear-gradient(transparent 30%, #6b3a12 30% 34%, transparent 34% 66%, #6b3a12 66% 70%, transparent 70%),
+    repeating-linear-gradient(90deg, #b5651d 0 22px, #a0561a 22px 24px);
+  box-shadow: var(--outline), inset -6px -6px 0 #6b3a12, inset 6px 6px 0 #d08a4a;
+}
+
+.barrel__hole {
+  position: relative;
+  aspect-ratio: 1;
+  min-height: 32px;
+  border: 0;
+  background: var(--ink);
+  box-shadow: inset 3px 3px 0 #000;
+  cursor: pointer;
+}
+
+.barrel__hole:disabled {
+  cursor: default;
+}
+
+/* 插了劍：露出劍柄 */
+.barrel__hole.is-filled::after {
+  content: '';
+  position: absolute;
+  top: 18%;
+  left: 50%;
+  width: 6px;
+  height: 64%;
+  margin-left: -3px;
+  background: var(--yellow);
+  box-shadow: 0 0 0 2px var(--ink), -8px 4px 0 -2px var(--red), 8px 4px 0 -2px var(--red);
+}

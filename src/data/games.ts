@@ -17,6 +17,10 @@ export type GameId =
   | 'board'
   | 'most-likely'
   | 'two-truths'
+  | 'stop-ten'
+  | 'reaction'
+  | 'memory'
+  | 'pirate'
 
 // 聚會工具（列在遊戲列表下面）
 export type ToolId = 'scoreboard' | 'summary' | 'teams'
@@ -170,6 +174,7 @@ export const SPY_WORDS: [string, string][] = [
 
 export const BOMB_COLORS: SpriteColors = { a: '#3b3b4f', b: '#ffd23f', c: '#c49a6c' }
 export const CHEST_COLORS: SpriteColors = { a: '#b5651d', b: '#e0b84a', c: '#ffd23f' }
+export const PIRATE_COLORS: SpriteColors = { a: '#f2c9a0', b: '#e63946', c: '#d9a07a', w: '#ffffff' }
 export const EXPLOSION_COLORS: SpriteColors = { a: '#f47920', b: '#ffd23f', c: '#fff3c4', w: '#ffffff' }
 
 export const GAME_LIST: GameMeta[] = [
@@ -189,6 +194,10 @@ export const GAME_LIST: GameMeta[] = [
   { id: 'board', name: '喝酒大富翁', desc: '擲骰子走格子照做', icon: 'board', colors: { a: '#e63946', b: '#ffd23f', c: '#2fb37f', e: '#3a7bd5' } },
   { id: 'most-likely', name: '誰最可能', desc: '一起指，最多票的喝', icon: 'finger', colors: { a: '#f2c9a0', b: '#3a7bd5' } },
   { id: 'two-truths', name: '兩真一假', desc: '猜出哪句是假的', icon: 'mask', colors: { a: '#ffd23f' } },
+  { id: 'stop-ten', name: '停在 10 秒', desc: '盲按計時，差最多的喝', icon: 'stopwatch', colors: { a: '#ffffff', b: '#e63946', c: '#c0c6cc', e: '#e63946' } },
+  { id: 'reaction', name: '反應力大考驗', desc: '綠燈就按，最慢的喝', icon: 'lightning', colors: { a: '#ffd23f' } },
+  { id: 'memory', name: '記憶挑戰', desc: '燈號越來越長，記錯的喝', icon: 'pads', colors: { a: '#e63946', b: '#ffd23f', c: '#2fb37f', e: '#3a7bd5' } },
+  { id: 'pirate', name: '瘋狂海盜桶', desc: '插到海盜跳出來的喝', icon: 'pirate', colors: PIRATE_COLORS },
 ]
 
 export const TOOL_LIST: GameMeta<ToolId>[] = [

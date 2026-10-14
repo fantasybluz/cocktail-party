@@ -16,9 +16,13 @@ import { KingsCup } from './games/KingsCup.tsx'
 import { LiarsDice } from './games/LiarsDice.tsx'
 import { MostLikely } from './games/MostLikely.tsx'
 import { NeverHaveIEver } from './games/NeverHaveIEver.tsx'
+import { Memory } from './games/Memory.tsx'
 import { NumberBomb } from './games/NumberBomb.tsx'
 import { PenaltyWheel } from './games/PenaltyWheel.tsx'
+import { PirateBarrel } from './games/PirateBarrel.tsx'
 import { drawTruthDare, type TruthDareCard } from './games/questions.ts'
+import { Reaction } from './games/Reaction.tsx'
+import { StopTen } from './games/StopTen.tsx'
 import { TruthOrDare } from './games/TruthOrDare.tsx'
 import { TwoTruths } from './games/TwoTruths.tsx'
 import { WhoIsSpy } from './games/WhoIsSpy.tsx'
@@ -48,7 +52,18 @@ const PAGES: { id: PageId; name: string }[] = [...GAME_LIST, ...TOOL_LIST]
 const VIEWS = new Set<string>(['slot', 'guide', 'changelog', 'games', ...PAGES.map((page) => page.id)])
 
 // 跟時間、手指有關的遊戲離開就卸載（停止計時）；其他遊戲切走再回來會保留進度
-const UNMOUNT_WHEN_HIDDEN = new Set<PageId>(['wheel', 'hot-potato', 'fate-finger', 'heads-up', 'draw-guess', 'teams'])
+const UNMOUNT_WHEN_HIDDEN = new Set<PageId>([
+  'wheel',
+  'hot-potato',
+  'fate-finger',
+  'heads-up',
+  'draw-guess',
+  'teams',
+  'stop-ten',
+  'reaction',
+  'memory',
+  'pirate',
+])
 
 const ROSTER_KEY = 'mix-slot-roster'
 const LOG_KEY = 'mix-slot-log'
@@ -225,6 +240,14 @@ export default function App() {
         return <MostLikely />
       case 'two-truths':
         return <TwoTruths />
+      case 'stop-ten':
+        return <StopTen />
+      case 'reaction':
+        return <Reaction />
+      case 'memory':
+        return <Memory />
+      case 'pirate':
+        return <PirateBarrel />
       case 'scoreboard':
         return <Scoreboard />
       case 'teams':
