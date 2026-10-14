@@ -21,6 +21,8 @@ export function FateFinger() {
   const [fingers, setFingers] = useState<Map<number, Finger>>(new Map())
   const [phase, setPhase] = useState<Phase>('waiting')
   const [winner, setWinner] = useState<number | null>(null)
+  // 開獎時被選中的手指位置；大家放開後還留在畫面上，才按得到下面的按鈕
+  const [winnerMark, setWinnerMark] = useState<Finger | null>(null)
   const timer = useRef(0)
   const colorIndex = useRef(0)
   // 多根手指同時移動時事件很密集，用 ref 存最新位置，避免讀到舊的 state 互相蓋掉
@@ -45,6 +47,7 @@ export function FateFinger() {
     timer.current = window.setTimeout(() => {
       const id = randomOf([...next.keys()])
       setWinner(id)
+      setWinnerMark(fingersRef.current.get(id) ?? next.get(id) ?? null)
       setPhase('picked')
       sound.win()
       vibrate([100, 50, 200])
@@ -56,9 +59,21 @@ export function FateFinger() {
     return { x: event.clientX - rect.left, y: event.clientY - rect.top }
   }
 
+  // 開新的一局：清掉上一局的結果
+  function reset() {
+    clearTimeout(timer.current)
+    setPhase('waiting')
+    setWinner(null)
+    setWinnerMark(null)
+  }
+
   function onDown(event: PointerEvent<HTMLDivElement>) {
     sound.unlock()
-    if (phase === 'picked') return
+    // 開獎後大家都放開了，再放手指就是開新的一局
+    if (phase === 'picked') {
+      if (fingersRef.current.size > 0) return
+      reset()
+    }
     const next = new Map(fingersRef.current)
     next.set(event.pointerId, { ...position(event), color: COLORS[colorIndex.current++ % COLORS.length] })
     commit(next)
@@ -76,20 +91,16 @@ export function FateFinger() {
     const next = new Map(fingersRef.current)
     next.delete(event.pointerId)
     commit(next)
-    if (phase === 'picked') {
-      // 開獎後大家放開，就可以再玩一次
-      if (next.size === 0) {
-        setPhase('waiting')
-        setWinner(null)
-      }
-      return
-    }
+    // 開獎後放開手指，結果和按鈕留著
+    if (phase === 'picked') return
     restartHold(next)
   }
 
   const message =
     phase === 'picked'
-      ? '亮起來的那根手指喝！'
+      ? fingers.size > 0
+        ? '亮起來的那根手指喝！'
+        : '亮起來的那根手指喝！再放手指就開新的一局'
       : phase === 'holding'
         ? `${fingers.size} 根手指，不要動⋯`
         : '大家各放一根手指在框框裡'
@@ -108,25 +119,42 @@ export function FateFinger() {
         <p className="finger-zone__message" aria-live="polite">
           {message}
         </p>
-        {[...fingers].map(([id, { x, y, color }]) => (
+        {[...fingers]
+          .filter(([id]) => phase !== 'picked' || id !== winner)
+          .map(([id, { x, y, color }]) => (
+            <span
+              key={id}
+              className={phase === 'picked' ? 'finger is-out' : 'finger'}
+              style={{ left: x, top: y, background: color }}
+            />
+          ))}
+        {phase === 'picked' && winnerMark && (
           <span
-            key={id}
-            className={['finger', id === winner && 'is-winner', phase === 'picked' && id !== winner && 'is-out']
-              .filter(Boolean)
-              .join(' ')}
-            style={{ left: x, top: y, background: color }}
+            className="finger is-winner"
+            id="finger-winner"
+            style={{ left: winnerMark.x, top: winnerMark.y, background: winnerMark.color }}
           />
-        ))}
+        )}
       </div>
       {phase === 'picked' && (
-        <div className="btn-row">
-          <button className="btn btn--orange" type="button" onClick={loserSpin}>
-            去轉拉霸機
+        <>
+          <div className="btn-row">
+            <button className="btn btn--orange" id="finger-spin" type="button" onClick={loserSpin}>
+              去轉拉霸機
+            </button>
+            <button
+              className="btn"
+              id="finger-record"
+              type="button"
+              onClick={() => recordDrink({ title: '誰被選中了？', reason: '命運手指', kind: 'lose' })}
+            >
+              記一杯
+            </button>
+          </div>
+          <button className="btn btn--small" type="button" onClick={reset}>
+            再玩一次
           </button>
-          <button className="btn" type="button" onClick={() => recordDrink({ title: '誰被選中了？', reason: '命運手指', kind: 'lose' })}>
-            記一杯
-          </button>
-        </div>
+        </>
       )}
       <p className="game-rule finger-hint">
         iPhone 大約只能同時偵測 5 根手指，人多的話可以改用

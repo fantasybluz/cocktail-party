@@ -179,6 +179,22 @@ button {
   color: var(--yellow);
 }
 
+.author__sep {
+  margin: 0 4px;
+}
+
+.version {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.version__new {
+  font-size: 12px;
+  line-height: 16px;
+  animation: blink 0.8s steps(1) infinite;
+}
+
 .sound-btn {
   flex: none;
   height: 36px;

@@ -85,6 +85,12 @@ npm run preview    # 預覽 build 結果
 推到 `main` 會由 GitHub Actions（`.github/workflows/deploy.yml`）跑 lint、測試、build，
 再部署到 GitHub Pages，大約一兩分鐘。`vite.config.ts` 的 `base` 要和 repo 名稱一致。
 
+## 版號
+
+目前版本寫在 `VERSION`，每一版改了什麼寫在 [CHANGELOG.md](CHANGELOG.md)，網站頁尾的版號點進去就是這份更新紀錄
+（有新版本時旁邊會出現 NEW）。發版流程見 [RELEASING.md](RELEASING.md)：改 `VERSION`、整理 CHANGELOG、
+推 `v1.1.0` 這種標籤，GitHub Actions 會檢查標籤和 `VERSION` 一致後建立 GitHub Release。
+
 ## 結構
 
 ```

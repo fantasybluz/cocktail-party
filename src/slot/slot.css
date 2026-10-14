@@ -683,3 +683,29 @@
 .guide--warning {
   box-shadow: var(--outline), inset 0 0 0 4px var(--red), inset -8px -8px 0 var(--cream-dark);
 }
+
+/* ---------- 更新紀錄 ---------- */
+
+.changelog__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+}
+
+.changelog__head strong {
+  font-size: 24px;
+  font-weight: normal;
+  line-height: 32px;
+}
+
+.changelog__note {
+  font-size: 12px;
+  color: var(--text-soft);
+}
+
+.changelog li strong {
+  font-weight: normal;
+  color: var(--red);
+}

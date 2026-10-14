@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: 標籤要跟 VERSION 一致
+        run: test "v$(cat VERSION)" = "$GITHUB_REF_NAME"
+
+      - name: 取出這一版的更新紀錄
+        run: |
+          version="$(cat VERSION)"
+          awk -v v="## $version" '$0 == v { found = 1; next } found && /^## / { exit } found' CHANGELOG.md > notes.md
+          test -s notes.md
+
+      - name: 建立 GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "$GITHUB_REF_NAME" --title "$GITHUB_REF_NAME" --notes-file notes.md
