@@ -9,7 +9,9 @@
     "lint": "eslint .",
     "lint:css": "stylelint \"src/**/*.css\"",
     "test": "vitest run",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "npm run build && npx --yes wrangler@4 pages deploy dist --project-name cocktail-party --branch main",
+    "build:redirect": "node scripts/build-redirect.mjs"
   },
   "dependencies": {
     "react": "^19.3.0",

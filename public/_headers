@@ -1,0 +1,14 @@
+# Cloudflare Pages 的回應標頭（這個檔案本身不會被提供出去）
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+
+# 預設網址不要被搜尋引擎收錄，只收 drunk.bluz.dev
+https://cocktail-party-2eh.pages.dev/*
+  X-Robots-Tag: noindex
+
+# Vite 產出的檔名帶內容雜湊，內容不會變
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

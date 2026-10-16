@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy
 
 on:
   push:
@@ -17,7 +17,8 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  # lint、測試、建置都過了才部署
+  check:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -41,18 +42,61 @@ jobs:
       - name: Build
         run: npm run build
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./dist
+  # 網站在 Cloudflare Pages（https://drunk.bluz.dev）。
+  # 要先在 repo 設定 CLOUDFLARE_API_TOKEN、CLOUDFLARE_ACCOUNT_ID 兩個 secret，沒設就跳過（先用筆電 npm run deploy）
+  cloudflare-pages:
+    needs: check
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - name: Check secrets
+        id: secrets
+        run: echo "ready=${{ env.CLOUDFLARE_API_TOKEN != '' && env.CLOUDFLARE_ACCOUNT_ID != '' }}" >> "$GITHUB_OUTPUT"
 
-  deploy:
-    needs: build
+      - name: Checkout
+        if: steps.secrets.outputs.ready == 'true'
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        if: steps.secrets.outputs.ready == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Build and deploy
+        if: steps.secrets.outputs.ready == 'true'
+        run: |
+          npm ci
+          npm run build
+          npx --yes wrangler@4 pages deploy dist --project-name cocktail-party --branch main
+
+  # 舊網址（fantasybluz.github.io/cocktail-party/）只放轉址頁，轉到新網址的同一個地方
+  github-pages-redirect:
+    needs: check
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Build redirect pages
+        run: node scripts/build-redirect.mjs
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./redirect-dist
+
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4

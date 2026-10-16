@@ -18,7 +18,8 @@
    ```
 
 5. GitHub Actions：
-   - `deploy.yml`（推 `main`）：lint、測試、建置、部署到 GitHub Pages
+   - `deploy.yml`（推 `main`）：lint、測試、建置，部署到 Cloudflare Pages（`drunk.bluz.dev`，要先設 Cloudflare 的 secret，
+     沒設之前用筆電 `npm run deploy`），GitHub Pages 的舊網址只放轉址頁（`scripts/build-redirect.mjs`）
    - `release.yml`（推 `v*` 標籤）：檢查標籤跟 `VERSION` 一致，用 `CHANGELOG.md` 那一版的內容建立 GitHub Release
 
 ## 版號怎麼跳

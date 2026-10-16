@@ -130,7 +130,7 @@ export function meter(ctx: Ctx, x: number, y: number, level: number, color: stri
 // 頁尾：網址和法定警語
 export function footer(ctx: Ctx, y: number): number {
   text(ctx, '超商調酒拉霸機', PAD, y, { size: 36, color: C.cream })
-  text(ctx, 'fantasybluz.github.io/cocktail-party', PAD, y + 52, { size: 24, color: C.muted })
+  text(ctx, 'drunk.bluz.dev', PAD, y + 52, { size: 24, color: C.muted })
   text(ctx, '禁止酒駕・飲酒過量，有害健康', WIDTH - PAD, y + 52, { size: 24, color: C.muted, align: 'right' })
   return y + 100
 }

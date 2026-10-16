@@ -1,6 +1,6 @@
 # 超商調酒拉霸機 cocktail-party
 
-像素風的聚會小工具，用 React + TypeScript + Vite 寫成靜態網站，放在 GitHub Pages。
+像素風的聚會小工具，用 React + TypeScript + Vite 寫成靜態網站，放在 Cloudflare Pages。
 底部切換兩個頁面：
 
 - **調酒拉霸機**：三個轉輪「基酒、材料一、材料二」，品項都是超商（以 7-11 為主）買得到的東西。
@@ -11,7 +11,7 @@
 - **喝酒遊戲**：20 種一支手機大家輪流操作的遊戲，加上 2 個聚會工具；輸了可以直接「去轉拉霸機」決定喝什麼，
   或按「記一杯」記到記分板
 
-網址：https://fantasybluz.github.io/cocktail-party/
+網址：https://drunk.bluz.dev/ （舊網址 https://fantasybluz.github.io/cocktail-party/ 會自動轉過來，`#頁面` 也會帶著）
 把網址貼到 LINE 聊天室，大家點了會直接在 LINE 內建瀏覽器打開。
 
 ## 在家玩：要先準備什麼
