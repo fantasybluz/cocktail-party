@@ -8,7 +8,7 @@
   - **惡魔開關**：打開後機台變暗紅色，只轉出高濃度組合（估算約 19～26%）。基酒只剩 35% 以上的烈酒，
     第三個轉輪改成「加烈」再加一份烈酒，材料一多了啤酒。酒譜參考網路上「後勁強、容易醉」的調酒
     （長島冰茶、野格炸彈、深水炸彈、氣泡烈酒），每杯都寫了容易醉的原因；1 份以 shot 杯（30ml）計
-- **喝酒遊戲**：20 種一支手機大家輪流操作的遊戲，加上 2 個聚會工具；輸了可以直接「去轉拉霸機」決定喝什麼，
+- **喝酒遊戲**：20 種一支手機大家輪流操作的遊戲，加上 3 個聚會工具（記分板、派對結算、分組點名）；輸了可以直接「去轉拉霸機」決定喝什麼，
   或按「記一杯」記到記分板
 
 網址：https://drunk.bluz.dev/ （舊網址 https://fantasybluz.github.io/cocktail-party/ 會自動轉過來，`#頁面` 也會帶著）
@@ -68,46 +68,6 @@
 - 先安排好回家方式，**喝了就不開車**
 - 未滿 18 歲不要喝；不舒服就停，不用勉強玩完
 
-## 開發
-
-```bash
-npm install
-npm run dev        # 開發伺服器 http://localhost:5173/cocktail-party/
-npm test           # 單元測試（資料完整性、挑酒譜邏輯）
-npm run lint       # ESLint
-npm run lint:css   # Stylelint
-npm run build      # 輸出到 dist/
-npm run preview    # 預覽 build 結果
-```
-
-## 部署
-
-推到 `main` 會由 GitHub Actions（`.github/workflows/deploy.yml`）跑 lint、測試、build，
-再部署到 GitHub Pages，大約一兩分鐘。`vite.config.ts` 的 `base` 要和 repo 名稱一致。
-
-## 版號
-
-目前版本寫在 `VERSION`，每一版改了什麼寫在 [CHANGELOG.md](CHANGELOG.md)，網站頁尾的版號點進去就是這份更新紀錄
-（有新版本時旁邊會出現 NEW）。發版流程見 [RELEASING.md](RELEASING.md)：改 `VERSION`、整理 CHANGELOG、
-推 `v1.1.0` 這種標籤，GitHub Actions 會檢查標籤和 `VERSION` 一致後建立 GitHub Release。
-
-## 結構
-
-```
-src/
-├── App.tsx            # 切換頁面、爆炸畫面、遊戲共用的動作
-├── party.ts           # 遊戲共用動作的 context（輸家去轉拉霸機、爆炸畫面）
-├── data/
-│   ├── drinks.ts      # 轉輪品項、酒譜
-│   └── games.ts       # 遊戲列表、題庫
-├── slot/              # 調酒拉霸機（轉輪、酒譜卡片、挑酒譜邏輯、分享到 LINE）
-├── games/             # 20 個喝酒遊戲，規則邏輯在 cards.ts、dice.ts、board.ts、stopTen.ts 等
-├── tools/             # 記分板、分組點名
-├── components/        # 共用元件（像素圖、結果、加減器、底部切換列⋯）
-├── lib/               # 像素圖樣、音效、亂數、網址切換、瀏覽人數
-└── styles/base.css    # 色票、字型、按鈕、液晶螢幕等共用樣式
-```
-
 ## 喝酒遊戲
 
 | 遊戲 | 玩法 |
@@ -154,31 +114,32 @@ src/
 - 頁面用網址的 `#` 切換（例如 `#spy`），LINE 和瀏覽器的上一頁也能用
 - 跟時間、手指有關的遊戲（懲罰轉盤、傳手機炸彈、命運手指、頭上猜詞、你畫我猜、停在 10 秒、反應力大考驗、記憶挑戰、瘋狂海盜桶）離開頁面就停止；其他遊戲切走再回來會保留進度
 
-## 修改內容
-
-| 要改的東西 | 位置 |
-|---|---|
-| 轉輪品項（名稱、濃度、甜度、氣泡、顏色） | `src/data/drinks.ts` 的 `BASES`、`MIXERS`、`ACCENTS` |
-| 酒譜（組合、比例、口感、標籤） | `src/data/drinks.ts` 的 `RECIPES` |
-| 惡魔模式（加烈品項、酒譜、注意事項） | `src/data/drinks.ts` 的 `DEVIL_SHOTS`、`DEVIL_RECIPES` |
-| 像素圖樣（16x16） | `src/lib/sprites.ts` 的 `SPRITES` |
-| 轉盤預設選項、遊戲題庫、成人題庫、大富翁格子 | `src/data/games.ts` |
-| 連結預覽圖 | `public/og.png`（1200x630），`index.html` 的 `og:image` 指向它 |
-| 在家玩的採買組合 | `src/data/shopping.ts`（能做幾杯會自動算，測試會檢查） |
-
-改完跑 `npm test`：酒譜的品名打錯、圖樣不是 16x16、用到沒定義的顏色、題目重複都會報錯。
-
 酒譜整理自網路上的超商調酒文章，標「創意」的是自己搭的。各門市進貨不同，大店品項比較齊。
 
-## 瀏覽人數
+頁尾的「你是第 N 個酒鬼」是 [GoatCounter](https://www.goatcounter.com) 記的瀏覽人數（有最多四小時的快取，是大概的數字）。
 
-用 [GoatCounter](https://www.goatcounter.com) 記錄，後台在 https://cocktail-party.goatcounter.com 。
-代碼寫在 `src/lib/visitors.ts` 的 `GOATCOUNTER_CODE`；要在頁尾顯示人數，GoatCounter 設定要打開
-「Allow adding visitor counts on your website」（沒打開時 `/counter/TOTAL.json` 會回 403，頁尾就不顯示）。
-本機（localhost、127.0.0.1）開的不會被記錄。
+## 開發
 
-頁尾就會顯示「你是第 N 個酒鬼」（GoatCounter 的總數有最多四小時的快取，是大概的數字），
-後台也看得到每個遊戲頁的瀏覽數。
+```bash
+npm install
+npm run dev        # http://localhost:5173/
+npm test           # 單元測試 + 文件檢查
+npm run lint && npm run lint:css
+npm run build      # 型別檢查 + 建置到 dist/
+```
+
+推到 `main` 會由 GitHub Actions 檢查後部署到 Cloudflare Pages，舊的 GitHub Pages 網址只放轉址頁；
+設定和 secret 見 [docs/setup.md](docs/setup.md)。發版見 [RELEASING.md](RELEASING.md)。
+
+## 文件
+
+| | |
+|---|---|
+| [docs/architecture.md](docs/architecture.md) | 架構：資料夾、`#` 網址、存在手機上的資料、版號、GoatCounter、分享圖、部署 |
+| [docs/setup.md](docs/setup.md) | 本機開發、部署、secret、網域、舊網址轉址 |
+| [docs/decisions/](docs/decisions/) | 重要決定（ADR） |
+| [docs/README.md](docs/README.md) | 文件怎麼維護、要改的東西在哪個檔案 |
+| [CHANGELOG.md](CHANGELOG.md) | 更新紀錄（網站頁尾的版號點進去也看得到） |
 
 ## 字型
 
